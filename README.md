@@ -22,13 +22,13 @@ main: nhánh ổn định, chỉ merge code đã review.
 
 Đặt theo cấu trúc:
 
-<type>/<member-name>/<feature-name>
+type/member-name/feature-name
 
 Ví dụ:
 
 feature/khoa/login
 
-feature/nhi/service-list
+feature/khoa/service-list
 
 🔹 Các bước làm việc
 
