@@ -1,9 +1,15 @@
 🚀 Cách chạy project
-1️⃣ Clone repo
+
+1- Clone repo
+
 git clone https://github.com/<your-team>/HomeServiceApp.git
+
 cd HomeServiceApp
-2️⃣ Build bằng Gradle Wrapper
+
+2️- Build bằng Gradle Wrapper
+
 ./gradlew clean build
+
 ⚠️ Không cần cài Gradle thủ công – hệ thống sẽ tự tải đúng phiên bản qua Wrapper.
 
 🌿 Quy tắc làm việc với Git
