@@ -24,6 +24,12 @@ main: nhánh ổn định, chỉ merge code đã review.
 
 type/member-name/feature-name
 
+feature:	Làm tính năng mới
+
+fix:	Sửa lỗi
+
+update:	Cập nhật, chỉnh sửa nhỏ
+
 Ví dụ:
 
 feature/khoa/login
@@ -47,3 +53,9 @@ git commit -m "Mô tả ngắn gọn nội dung thay đổi"
 git push -u origin feature/<tên-thành-viên>/<chức-năng>
 
 4- Tạo Pull Request (PR) → chờ trưởng nhóm review & merge.
+
+✅ Lưu ý:
+
+Không commit trực tiếp vào main.
+
+Mỗi tính năng → 1 branch riêng → 1 PR.
