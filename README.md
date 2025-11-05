@@ -2,11 +2,11 @@
 
 1- Clone repo
 
-git clone https://github.com/<your-team>/HomeServiceApp.git
-
-cd HomeServiceApp
+git clone https://github.com/ndkhoa29/DoAnAndroid.git
 
 2️- Build bằng Gradle Wrapper
+
+(Trong cửa sổ Terminal chạy lệnh sau)
 
 ./gradlew clean build
 
