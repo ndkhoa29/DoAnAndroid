@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">HomeServiceApp</string>
+    <string name="back">Back</string>
+    <string name="calendar_icon">Calendar icon</string>
+    <string name="prev">Previous month</string>
+    <string name="next">Next month</string>
+
 </resources>
