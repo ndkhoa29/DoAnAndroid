@@ -34,29 +34,6 @@ public class ProfileFragment extends Fragment {
         menuSettings = view.findViewById(R.id.menuSettings);
         menuLogout = view.findViewById(R.id.menuLogout);
 
-        menuMyProfile.setOnClickListener(v ->
-                Toast.makeText(getContext(), "My Profile clicked", Toast.LENGTH_SHORT).show()
-        );
-
-        menuNotification.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Notification clicked", Toast.LENGTH_SHORT).show()
-        );
-
-        menuFavourite.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Favourite clicked", Toast.LENGTH_SHORT).show()
-        );
-
-        menuMyBooking.setOnClickListener(v ->
-                Toast.makeText(getContext(), "My Booking clicked", Toast.LENGTH_SHORT).show()
-        );
-
-        menuSecurity.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Security clicked", Toast.LENGTH_SHORT).show()
-        );
-
-        menuSettings.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Settings clicked", Toast.LENGTH_SHORT).show()
-        );
 
         menuLogout.setOnClickListener(v -> showLogoutDialog());
 
