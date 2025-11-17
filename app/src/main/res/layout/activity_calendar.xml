@@ -131,41 +131,45 @@
             android:alignmentMode="alignMargins"
             android:useDefaultMargins="true">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTime1"
                 android:layout_width="0dp"
                 android:layout_columnWeight="1"
                 android:layout_height="48dp"
                 android:text="08:00 AM"
+                android:textAllCaps="false"
                 android:background="@drawable/time_button_bg_selected"
-                android:textAllCaps="false" />
+                app:backgroundTint="@null" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTime2"
                 android:layout_width="0dp"
                 android:layout_columnWeight="1"
                 android:layout_height="48dp"
                 android:text="09:00 AM"
+                android:textAllCaps="false"
                 android:background="@drawable/time_button_bg_default"
-                android:textAllCaps="false" />
+                app:backgroundTint="@null" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTime3"
                 android:layout_width="0dp"
                 android:layout_columnWeight="1"
                 android:layout_height="48dp"
                 android:text="12:00 AM"
+                android:textAllCaps="false"
                 android:background="@drawable/time_button_bg_default"
-                android:textAllCaps="false" />
+                app:backgroundTint="@null" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTime4"
                 android:layout_width="0dp"
                 android:layout_columnWeight="1"
                 android:layout_height="48dp"
                 android:text="02:00 AM"
+                android:textAllCaps="false"
                 android:background="@drawable/time_button_bg_default"
-                android:textAllCaps="false" />
+                app:backgroundTint="@null" />
         </GridLayout>
 
         <!-- Continue Button -->
