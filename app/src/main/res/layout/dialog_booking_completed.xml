@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_rounded_background">
+
+    <!-- Card Container -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        android:layout_margin="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="730dp"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <!-- Success Icon with Animation Container -->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <!-- Outer Circle (Animated) -->
+                <View
+                    android:id="@+id/outerCircle"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:alpha="0.2"
+                    android:background="@drawable/circle_success_outer" />
+
+                <!-- Success Circle -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerInParent="true"
+                    app:cardBackgroundColor="#4CAF50"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/iconSuccess"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Success"
+                        android:src="@drawable/ic_check" />
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <!-- Title with gradient text effect -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:letterSpacing="0.02"
+                android:text="Đặt dịch vụ thành công!"
+                android:textColor="#1A1A1A"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="6dp"
+                android:text="Đơn hàng của bạn đã được xác nhận\nvà đang chờ xử lý"
+                android:textColor="#666666"
+                android:textSize="15sp" />
+
+            <!-- Booking ID (Optional) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:background="@drawable/bg_booking_id"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mã đặt dịch vụ: "
+                    android:textColor="#999999"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvBookingId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="#DV123456"
+                    android:textColor="#2196F3"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Buttons Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <!-- Go to Home Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGoToHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Về trang chủ"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:elevation="4dp"
+                    android:background="@drawable/btn_rounded_blue"
+                    app:backgroundTint="@null" />
+
+                <!-- View Booking Button -->
+                <Button
+                    android:id="@+id/btnViewBooking"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/btn_outline_blue"
+                    android:text="Xem đặt dịch vụ"
+                    android:textAllCaps="false"
+                    android:textColor="#2196F3"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
