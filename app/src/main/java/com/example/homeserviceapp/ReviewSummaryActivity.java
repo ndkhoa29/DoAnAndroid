@@ -78,9 +78,9 @@ public class ReviewSummaryActivity extends AppCompatActivity {
     private void loadData() {
         // Load data from Intent or database
         // For demo purposes, using hardcoded values
-        tvServiceName.setText("Office Cleaning");
-        tvAddress.setText("8502 Preston Rd.");
-        tvDate.setText("December 16, 2023");
+        tvServiceName.setText("Dọn dẹp văn phòng");
+        tvAddress.setText("15 Trưng Nữ Vương, Hải Châu, Đà Nẵng");
+        tvDate.setText("16 tháng 11, 2023");
         tvTime.setText("08:00 AM");
 
         // Format prices
