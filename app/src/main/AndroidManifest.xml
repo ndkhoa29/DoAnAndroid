@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HomeServiceApp">
         <activity
+            android:name=".BookingCompletedDialog"
+            android:exported="false" />
+        <activity
             android:name=".PaymentMethodActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -26,6 +28,13 @@ public class PaymentMethodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_method);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+            }
+        });
 
         initViews();
         setupListeners();
@@ -52,207 +61,105 @@ public class PaymentMethodActivity extends AppCompatActivity {
 
     private void setupListeners() {
         // Back button
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
 
-        // MoMo
-        cardMomo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPaymentMethod("MoMo", rbMomo);
-            }
-        });
-
-        // VNPay
-        cardVnpay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPaymentMethod("VNPay", rbVnpay);
-            }
-        });
-
-        // ZaloPay
-        cardZalopay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPaymentMethod("ZaloPay", rbZalopay);
-            }
-        });
-
-        // Viettel Money
-        cardViettelMoney.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPaymentMethod("Viettel Money", rbViettelMoney);
-            }
-        });
+        // Map CardViews -> RadioButtons -> PaymentMethod
+        setupPaymentCard(cardMomo, rbMomo, "MoMo");
+        setupPaymentCard(cardVnpay, rbVnpay, "VNPay");
+        setupPaymentCard(cardZalopay, rbZalopay, "ZaloPay");
+        setupPaymentCard(cardViettelMoney, rbViettelMoney, "Viettel Money");
 
         // Add new card
-        btnAddNewCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnAddNewCard.setOnClickListener(v ->
                 Toast.makeText(PaymentMethodActivity.this,
-                        "Chức năng thêm thẻ mới", Toast.LENGTH_SHORT).show();
-                // Navigate to add card screen
-                // Intent intent = new Intent(PaymentMethodActivity.this, AddCardActivity.class);
-                // startActivity(intent);
-            }
-        });
+                        "Chức năng thêm thẻ mới", Toast.LENGTH_SHORT).show()
+        );
 
-        // Pay Now button
-        btnPayNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                processPayment();
-            }
-        });
+        // Pay Now
+        btnPayNow.setOnClickListener(v -> processPayment());
+    }
+
+    private void setupPaymentCard(CardView card, RadioButton radio, String method) {
+        card.setOnClickListener(v -> selectPaymentMethod(method, radio));
     }
 
     private void loadData() {
-        // Get data from Intent
         Intent intent = getIntent();
         if (intent != null) {
             totalAmount = intent.getDoubleExtra("total_amount", 150.00);
             selectedPaymentMethod = intent.getStringExtra("payment_method");
-
-            if (selectedPaymentMethod == null) {
-                selectedPaymentMethod = "VNPay";
-            }
+            if (selectedPaymentMethod == null) selectedPaymentMethod = "VNPay";
         }
 
-        // Set total amount
         tvTotalAmount.setText(String.format("$%.2f", totalAmount));
-
-        // Set default selected payment method
         setDefaultPaymentMethod();
     }
 
     private void setDefaultPaymentMethod() {
         switch (selectedPaymentMethod) {
-            case "MoMo":
-                selectPaymentMethod("MoMo", rbMomo);
-                break;
-            case "VNPay":
-                selectPaymentMethod("VNPay", rbVnpay);
-                break;
-            case "ZaloPay":
-                selectPaymentMethod("ZaloPay", rbZalopay);
-                break;
-            case "Viettel Money":
-                selectPaymentMethod("Viettel Money", rbViettelMoney);
-                break;
-            default:
-                selectPaymentMethod("VNPay", rbVnpay);
-                break;
+            case "MoMo": selectPaymentMethod("MoMo", rbMomo); break;
+            case "VNPay": selectPaymentMethod("VNPay", rbVnpay); break;
+            case "ZaloPay": selectPaymentMethod("ZaloPay", rbZalopay); break;
+            case "Viettel Money": selectPaymentMethod("Viettel Money", rbViettelMoney); break;
+            default: selectPaymentMethod("VNPay", rbVnpay); break;
         }
     }
 
-    private void selectPaymentMethod(String methodName, RadioButton selectedRadio) {
-        // Uncheck all radio buttons
+    private void selectPaymentMethod(String method, RadioButton selectedRadio) {
+        // Uncheck all
         rbMomo.setChecked(false);
         rbVnpay.setChecked(false);
         rbZalopay.setChecked(false);
         rbViettelMoney.setChecked(false);
 
-        // Check selected radio button
+        // Check selected
         selectedRadio.setChecked(true);
-        selectedPaymentMethod = methodName;
+        selectedPaymentMethod = method;
 
-        Toast.makeText(this, "Đã chọn: " + methodName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Đã chọn: " + method, Toast.LENGTH_SHORT).show();
     }
 
     private void processPayment() {
         if (selectedPaymentMethod == null || selectedPaymentMethod.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn phương thức thanh toán",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Show loading
-        Toast.makeText(this, "Đang xử lý thanh toán qua " + selectedPaymentMethod + "...",
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Đang xử lý thanh toán qua " + selectedPaymentMethod + "...", Toast.LENGTH_SHORT).show();
 
-        // Here you would integrate with payment gateway
         switch (selectedPaymentMethod) {
-            case "MoMo":
-                // Integrate MoMo SDK
-                processMoMoPayment();
-                break;
-            case "VNPay":
-                // Integrate VNPay SDK
-                processVNPayPayment();
-                break;
-            case "ZaloPay":
-                // Integrate ZaloPay SDK
-                processZaloPayPayment();
-                break;
-            case "Viettel Money":
-                // Integrate Viettel Money SDK
-                processViettelMoneyPayment();
-                break;
+            case "MoMo": processMoMoPayment(); break;
+            case "VNPay": processVNPayPayment(); break;
+            case "ZaloPay": processZaloPayPayment(); break;
+            case "Viettel Money": processViettelMoneyPayment(); break;
         }
     }
 
     private void processMoMoPayment() {
-        // TODO: Implement MoMo payment integration
-        // Use MoMo SDK here
-        Toast.makeText(this, "Thanh toán MoMo: $" + totalAmount,
-                Toast.LENGTH_LONG).show();
-
-        // Return result to previous activity
+        Toast.makeText(this, "Thanh toán MoMo: $" + totalAmount, Toast.LENGTH_LONG).show();
         returnPaymentResult();
     }
 
     private void processVNPayPayment() {
-        // TODO: Implement VNPay payment integration
-        // Use VNPay SDK here
-        Toast.makeText(this, "Thanh toán VNPay: $" + totalAmount,
-                Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "Thanh toán VNPay: $" + totalAmount, Toast.LENGTH_LONG).show();
         returnPaymentResult();
     }
 
     private void processZaloPayPayment() {
-        // TODO: Implement ZaloPay payment integration
-        // Use ZaloPay SDK here
-        Toast.makeText(this, "Thanh toán ZaloPay: $" + totalAmount,
-                Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "Thanh toán ZaloPay: $" + totalAmount, Toast.LENGTH_LONG).show();
         returnPaymentResult();
     }
 
     private void processViettelMoneyPayment() {
-        // TODO: Implement Viettel Money payment integration
-        // Use Viettel Money SDK here
-        Toast.makeText(this, "Thanh toán Viettel Money: $" + totalAmount,
-                Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "Thanh toán Viettel Money: $" + totalAmount, Toast.LENGTH_LONG).show();
         returnPaymentResult();
     }
 
     private void returnPaymentResult() {
-        // Return selected payment method to previous activity
         Intent resultIntent = new Intent();
         resultIntent.putExtra("payment_method", selectedPaymentMethod);
         resultIntent.putExtra("payment_success", true);
         setResult(RESULT_OK, resultIntent);
-
-        // Navigate to payment success screen or return
-        // Intent intent = new Intent(this, PaymentSuccessActivity.class);
-        // intent.putExtra("payment_method", selectedPaymentMethod);
-        // intent.putExtra("amount", totalAmount);
-        // startActivity(intent);
-
-        finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
         finish();
     }
 }
