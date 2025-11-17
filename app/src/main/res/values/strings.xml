@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">HomeServiceApp</string>
-</resources>
+    <string name="back">Back</string>
+    <string name="call">Call</string>
+    <string name="message">Message</string>
+        <string name="edit">Chỉnh sửa</string>
+        <string name="edit_photo">Chỉnh sửa ảnh</string>
+        <string name="name">Họ và tên</string>
+        <string name="email">Email</string>
+        <string name="phone_number">Số điện thoại</string>
+        <string name="my_profile">Hồ sơ của tôi</string>
+        <string name="choose_profile_picture">Chọn ảnh đại diện</string>
+        <string name="take_photo">Chụp ảnh</string>
+        <string name="choose_from_gallery">Chọn từ thư viện</string>
+        <string name="cancel">Hủy</string>
+        <string name="permission_denied">Quyền truy cập bị từ chối</string>
+        <string name="profile_picture_updated">Ảnh đại diện đã được cập nhật</string>
+    </resources>
