@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -30,9 +32,9 @@ public class ReviewSummaryActivity extends AppCompatActivity {
     private TextView tvTotalPrice;
     private Button btnPayNow;
 
-    private double price = 30.00;
-    private double tax = 10.00;
-    private double totalPrice = 40.00;
+    private double price = 75000;
+    private double tax = 10.000;
+    private double totalPrice = 65.000;
     private String selectedPaymentMethod = "Ví VNPay";
 
     @Override
@@ -40,10 +42,19 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_summary);
 
+        // Thêm callback để xử lý back button và back gesture
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish(); // tương đương super.onBackPressed() + finish()
+            }
+        });
+
         initViews();
         setupListeners();
         loadData();
     }
+
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
@@ -159,21 +170,35 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         Toast.makeText(this, "Đang xử lý thanh toán qua " + selectedPaymentMethod + "...",
                 Toast.LENGTH_SHORT).show();
 
-        // Here you would integrate with payment gateway
-        // For demo, just show success message
-        Toast.makeText(this, "Thanh toán thành công!", Toast.LENGTH_LONG).show();
-
-        // Navigate to success screen or finish
-        // Intent intent = new Intent(this, PaymentSuccessActivity.class);
-        // intent.putExtra("payment_method", selectedPaymentMethod);
-        // intent.putExtra("total_amount", totalPrice);
-        // startActivity(intent);
-        // finish();
+        // Simulate payment processing delay
+        btnPayNow.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Show booking completed dialog
+                showBookingCompletedDialog();
+            }
+        }, 1500); // 1.5 seconds delay
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    private void showBookingCompletedDialog() {
+        BookingCompletedDialog.show(this, new BookingCompletedDialog.OnDialogActionListener() {
+            @Override
+            public void onGoToHome() {
+                // Navigate to home screen
+                Intent intent = new Intent(ReviewSummaryActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onViewBooking() {
+                // Navigate to booking details screen
+                // Intent intent = new Intent(ReviewSummaryActivity.this, BookingDetailsActivity.class);
+                // startActivity(intent);
+                Toast.makeText(ReviewSummaryActivity.this, "Xem chi tiết đặt dịch vụ", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 }
