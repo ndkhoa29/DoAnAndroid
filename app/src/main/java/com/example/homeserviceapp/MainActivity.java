@@ -1,5 +1,6 @@
 package com.example.homeserviceapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         navMessage.setOnClickListener(v -> {
-            loadFragment(new MessageFragment());
-            setActiveTab(1);
+            Intent intent = new Intent(MainActivity.this, MessageActivity.class);
+            startActivity(intent);
         });
 
         navBooking.setOnClickListener(v -> {
