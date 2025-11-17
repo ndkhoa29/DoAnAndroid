@@ -23,7 +23,6 @@ public class BookingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_booking, container, false);
 
-        // Khởi tạo views
         tabUpcoming = view.findViewById(R.id.tabUpcoming);
         tabCompleted = view.findViewById(R.id.tabCompleted);
         tabCancelled = view.findViewById(R.id.tabCancelled);
@@ -36,10 +35,8 @@ public class BookingFragment extends Fragment {
         indicatorCompleted = view.findViewById(R.id.indicatorCompleted);
         indicatorCancelled = view.findViewById(R.id.indicatorCancelled);
 
-        // Load fragment Upcoming mặc định
         loadChildFragment(new UpcomingFragment());
 
-        // Xử lý click tabs
         tabUpcoming.setOnClickListener(v -> {
             setActiveTab(0);
             loadChildFragment(new UpcomingFragment());
@@ -58,16 +55,13 @@ public class BookingFragment extends Fragment {
         return view;
     }
 
-    // Load child fragment vào container
     private void loadChildFragment(Fragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.tabContentContainer, fragment);
         transaction.commit();
     }
 
-    // Cập nhật UI của tabs
     private void setActiveTab(int position) {
-        // Reset tất cả tabs
         tvTabUpcoming.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray));
         tvTabCompleted.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray));
         tvTabCancelled.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray));
@@ -80,7 +74,6 @@ public class BookingFragment extends Fragment {
         indicatorCompleted.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent));
         indicatorCancelled.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent));
 
-        // Set active tab
         int activeColor = ContextCompat.getColor(requireContext(), R.color.blue);
         switch (position) {
             case 0:
