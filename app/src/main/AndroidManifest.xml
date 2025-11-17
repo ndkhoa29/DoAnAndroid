@@ -13,23 +13,24 @@
         android:theme="@style/Theme.HomeServiceApp">
 
         <activity
-<<<<<<< HEAD
             android:name=".MessageActivity"
             android:exported="false" />
+
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
+
         <activity
             android:name=".BookingActivity"
             android:exported="false" />
+
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
+
+        <!-- Đây là MainActivity -->
         <activity
             android:name=".MainActivity"
-=======
-            android:name=".CategoryActivity"
->>>>>>> origin/feature/thai/category
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +38,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CategoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".TabServiceActivity"
+            android:exported="false" />
+
     </application>
+
 
 </manifest>
