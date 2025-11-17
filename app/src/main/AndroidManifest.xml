@@ -14,6 +14,12 @@
 
         <!-- MainActivity luôn là launcher chính -->
         <activity
+            android:name=".PaymentMethodActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ReviewSummaryActivity"
+
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -25,6 +31,7 @@
         <!-- Các activity khác -->
         <activity
             android:name=".MessageActivity"
+
             android:exported="false" />
 
         <activity
