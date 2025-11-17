@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Header: Back + Title -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="@string/back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn ngày và giờ cho dịch vụ"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn ngày và giờ"
+            android:textSize="16sp" />
+
+        <!-- Card chứa Calendar (theo giao diện bạn gửi) -->
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Row: month label + calendar icon + arrows (simplified) -->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvMonth"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="November 2025"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/btnCalendarIcon"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_calendar"
+                        android:contentDescription="@string/calendar_icon" />
+
+                    <ImageButton
+                        android:id="@+id/btnPrevMonth"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_chevron_left"
+                        android:contentDescription="@string/prev" />
+
+                    <ImageButton
+                        android:id="@+id/btnNextMonth"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_chevron_right"
+                        android:contentDescription="@string/next" />
+                </LinearLayout>
+
+                <!-- CalendarView (bạn có thể thay bằng MaterialDatePicker nếu muốn) -->
+                <CalendarView
+                    android:id="@+id/calendarView"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:focusedMonthDateColor="@android:color/black"
+                    android:dateTextAppearance="@style/TextAppearance.AppCompat.Medium" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!--- đây là đoạn bạn yêu cầu: chữ "Time" trước các nút chọn giờ - -->
+        <TextView
+            android:id="@+id/tvTimeLabel"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thời gian"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Time selection as 2-column grid -->
+        <GridLayout
+            android:id="@+id/timeGrid"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true">
+
+            <Button
+                android:id="@+id/btnTime1"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_height="48dp"
+                android:text="08:00 AM"
+                android:background="@drawable/time_button_bg_selected"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnTime2"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_height="48dp"
+                android:text="09:00 AM"
+                android:background="@drawable/time_button_bg_default"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnTime3"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_height="48dp"
+                android:text="12:00 AM"
+                android:background="@drawable/time_button_bg_default"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnTime4"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_height="48dp"
+                android:text="02:00 AM"
+                android:background="@drawable/time_button_bg_default"
+                android:textAllCaps="false" />
+        </GridLayout>
+
+        <!-- Continue Button -->
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Tiếp tục"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#1098ff" />
+    </LinearLayout>
+</ScrollView>
