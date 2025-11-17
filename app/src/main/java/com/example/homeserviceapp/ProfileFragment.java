@@ -35,6 +35,13 @@ public class ProfileFragment extends Fragment {
         menuLogout = view.findViewById(R.id.menuLogout);
 
 
+        menuMyProfile = view.findViewById(R.id.menuMyProfile);
+
+        menuMyProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            startActivity(intent);
+        });
+
         menuLogout.setOnClickListener(v -> showLogoutDialog());
 
         return view;

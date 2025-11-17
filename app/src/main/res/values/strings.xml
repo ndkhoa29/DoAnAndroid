@@ -13,5 +13,7 @@
     <string name="calendar_icon">Calendar icon</string>
     <string name="prev">Previous month</string>
     <string name="next">Next month</string>
+    <string name="edit_photo">Edit Photo</string>
+
 
 </resources>

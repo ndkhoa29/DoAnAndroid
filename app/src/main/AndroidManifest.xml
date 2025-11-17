@@ -12,17 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HomeServiceApp">
 
-        <!-- MainActivity luôn là launcher chính -->
+        <!-- Màn chạy chính -->
         <activity
-            android:name=".BookingCompletedDialog"
-            android:exported="false" />
-        <activity
-            android:name=".PaymentMethodActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".ReviewSummaryActivity"
-
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -31,10 +22,18 @@
             </intent-filter>
         </activity>
 
-        <!-- Các activity khác -->
+        <!-- Các Activity khác -->
+        <activity
+            android:name=".PaymentMethodActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".BookingCompletedDialog"
+            android:exported="false" />
+
         <activity
             android:name=".MessageActivity"
-
             android:exported="false" />
 
         <activity

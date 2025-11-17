@@ -22,7 +22,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
     @Override
     public BookingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_booking, parent, false);
+                .inflate(R.layout.item_booking_upcoming, parent, false);
         return new BookingViewHolder(view);
     }
 
