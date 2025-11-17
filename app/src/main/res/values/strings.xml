@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">HomeServiceApp</string>
+
+    <string name="back">Back</string>
+    <string name="call">Call</string>
+    <string name="message">Message</string>
+        <string name="edit">Chỉnh sửa</string>
+        <string name="edit_photo">Chỉnh sửa ảnh</string>
+        <string name="name">Họ và tên</string>
+        <string name="email">Email</string>
+        <string name="phone_number">Số điện thoại</string>
+        <string name="my_profile">Hồ sơ của tôi</string>
+        <string name="choose_profile_picture">Chọn ảnh đại diện</string>
+        <string name="take_photo">Chụp ảnh</string>
+        <string name="choose_from_gallery">Chọn từ thư viện</string>
+        <string name="cancel">Hủy</string>
+        <string name="permission_denied">Quyền truy cập bị từ chối</string>
+        <string name="profile_picture_updated">Ảnh đại diện đã được cập nhật</string>
+    </resources>
+
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="back">Back</string>
+    <string name="calendar_icon">Calendar icon</string>
+    <string name="prev">Previous month</string>
+    <string name="next">Next month</string>
+    <string name="edit_photo">Edit Photo</string>
+
+
 </resources>
+
