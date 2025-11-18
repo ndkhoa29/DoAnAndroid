@@ -34,7 +34,7 @@ public class ReviewSummaryActivity extends AppCompatActivity {
 
     private double price = 75000;
     private double tax = 10.000;
-    private double totalPrice = 65.000;
+    private double totalPrice = 85.000;
     private String selectedPaymentMethod = "Ví VNPay";
 
     @Override
@@ -46,7 +46,7 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                finish(); // tương đương super.onBackPressed() + finish()
+                navigateToCalendar();
             }
         });
 
@@ -54,7 +54,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         setupListeners();
         loadData();
     }
-
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
@@ -73,10 +72,11 @@ public class ReviewSummaryActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        // Nút Back - quay về màn hình Calendar
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                navigateToCalendar();
             }
         });
 
@@ -122,10 +122,18 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         rbGooglePay.setChecked(true);
     }
 
+    private void navigateToCalendar() {
+        // Quay về màn hình Calendar
+        Intent intent = new Intent(ReviewSummaryActivity.this, CalendarActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     private void openPaymentMethodScreen() {
         Intent intent = new Intent(ReviewSummaryActivity.this, PaymentMethodActivity.class);
         intent.putExtra("total_amount", totalPrice);
-        intent.putExtra("payment_method", selectedPaymentMethod);
+        intent.putExtra("current_payment_method", selectedPaymentMethod);
         startActivityForResult(intent, REQUEST_PAYMENT_METHOD);
     }
 
@@ -150,10 +158,8 @@ public class ReviewSummaryActivity extends AppCompatActivity {
                 if (paymentSuccess) {
                     Toast.makeText(this, "Thanh toán thành công!",
                             Toast.LENGTH_LONG).show();
-                    // Navigate to success screen
-                    // Intent intent = new Intent(this, PaymentSuccessActivity.class);
-                    // startActivity(intent);
-                    // finish();
+                    // Navigate to success screen or show dialog
+                    showBookingCompletedDialog();
                 }
             }
         }
@@ -166,7 +172,7 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             return;
         }
 
-        // Show loading dialog
+        // Show loading message
         Toast.makeText(this, "Đang xử lý thanh toán qua " + selectedPaymentMethod + "...",
                 Toast.LENGTH_SHORT).show();
 
@@ -194,9 +200,11 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             @Override
             public void onViewBooking() {
                 // Navigate to booking details screen
+                Toast.makeText(ReviewSummaryActivity.this,
+                        "Xem chi tiết đặt dịch vụ", Toast.LENGTH_SHORT).show();
+                // Uncomment khi có BookingDetailsActivity
                 // Intent intent = new Intent(ReviewSummaryActivity.this, BookingDetailsActivity.class);
                 // startActivity(intent);
-                Toast.makeText(ReviewSummaryActivity.this, "Xem chi tiết đặt dịch vụ", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

@@ -46,7 +46,6 @@ public class CalendarActivity extends AppCompatActivity {
 
         btnContinue = findViewById(R.id.btnContinue);
 
-        // -------------------- Calendar & Month --------------------
         calendar = Calendar.getInstance();
         monthFormat = new SimpleDateFormat("MMMM yyyy", new Locale("vi")); // Việt Nam
 

@@ -22,7 +22,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
     private TextView tvTotalAmount;
 
     private String selectedPaymentMethod = "VNPay";
-    private double totalAmount = 150.00;
+    private double totalAmount = 150.000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
