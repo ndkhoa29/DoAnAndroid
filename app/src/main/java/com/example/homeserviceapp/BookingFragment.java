@@ -1,5 +1,4 @@
 package com.example.homeserviceapp;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
+import androidx.fragment.app.FragmentTransaction;
 
 public class BookingFragment extends Fragment {
 
     private LinearLayout tabUpcoming, tabCompleted, tabCancelled;
     private TextView tvTabUpcoming, tvTabCompleted, tvTabCancelled;
     private View indicatorUpcoming, indicatorCompleted, indicatorCancelled;
-    private RecyclerView rvBookings;
-    private BookingAdapter bookingAdapter;
-    private List<BookingItem> upcomingList, completedList, cancelledList;
 
     @Nullable
     @Override
@@ -42,85 +35,36 @@ public class BookingFragment extends Fragment {
         indicatorCompleted = view.findViewById(R.id.indicatorCompleted);
         indicatorCancelled = view.findViewById(R.id.indicatorCancelled);
 
-        rvBookings = view.findViewById(R.id.rvBookings);
-        rvBookings.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        // Tạo dữ liệu mẫu
-        createSampleData();
-
-        // Setup adapter với dữ liệu upcoming
-        bookingAdapter = new BookingAdapter(upcomingList);
-        rvBookings.setAdapter(bookingAdapter);
+        // Load fragment Upcoming mặc định
+        loadChildFragment(new UpcomingFragment());
 
         // Xử lý click tabs
         tabUpcoming.setOnClickListener(v -> {
             setActiveTab(0);
-            bookingAdapter = new BookingAdapter(upcomingList);
-            rvBookings.setAdapter(bookingAdapter);
+            loadChildFragment(new UpcomingFragment());
         });
 
         tabCompleted.setOnClickListener(v -> {
             setActiveTab(1);
-            bookingAdapter = new BookingAdapter(completedList);
-            rvBookings.setAdapter(bookingAdapter);
+            loadChildFragment(new CompletedFragment());
         });
 
         tabCancelled.setOnClickListener(v -> {
             setActiveTab(2);
-            bookingAdapter = new BookingAdapter(cancelledList);
-            rvBookings.setAdapter(bookingAdapter);
+            loadChildFragment(new CancelledFragment());
         });
 
         return view;
     }
 
-    private void createSampleData() {
-        // Upcoming bookings
-        upcomingList = new ArrayList<>();
-        upcomingList.add(new BookingItem(
-                "ID526565",
-                "22 Jan 2024",
-                "Office Cleaning",
-                "8502 Preston Rd.",
-                "08:00 AM",
-                "$30/h",
-                R.drawable.service_placeholder
-        ));
-        upcomingList.add(new BookingItem(
-                "ID526565",
-                "23 Jan 2024",
-                "Home Cleaning",
-                "3517 W. Gray St. Utica",
-                "10:00 AM",
-                "$30/h",
-                R.drawable.service_placeholder
-        ));
-
-        // Completed bookings
-        completedList = new ArrayList<>();
-        completedList.add(new BookingItem(
-                "ID526560",
-                "15 Jan 2024",
-                "Kitchen Cleaning",
-                "1234 Main St.",
-                "09:00 AM",
-                "$35/h",
-                R.drawable.service_placeholder
-        ));
-
-        // Cancelled bookings
-        cancelledList = new ArrayList<>();
-        cancelledList.add(new BookingItem(
-                "ID526550",
-                "10 Jan 2024",
-                "Car Washing",
-                "5678 Oak Ave.",
-                "14:00 PM",
-                "$40/h",
-                R.drawable.service_placeholder
-        ));
+    // Load child fragment vào container
+    private void loadChildFragment(Fragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.tabContentContainer, fragment);
+        transaction.commit();
     }
 
+    // Cập nhật UI của tabs
     private void setActiveTab(int position) {
         // Reset tất cả tabs
         tvTabUpcoming.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray));

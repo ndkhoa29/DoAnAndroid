@@ -2,8 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"  android:padding="32dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#FFFFFF"
+    android:padding="32dp">
 
+    <!-- Khung chua noi dung chinh -->
     <LinearLayout
         android:id="@+id/content_container"
         android:layout_width="match_parent"
@@ -12,6 +15,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
+        <!-- Logo ung dung -->
         <ImageView
             android:id="@+id/app_logo"
             android:layout_width="wrap_content"
@@ -20,6 +24,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="App Logo" />
 
+        <!-- Tieu de chinh -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -31,6 +36,7 @@
             android:textStyle="bold"
             android:gravity="center" />
 
+        <!-- Mo ta ngan ve dich vu -->
         <TextView
             android:id="@+id/tv_description"
             android:layout_width="wrap_content"
@@ -43,31 +49,9 @@
             android:textSize="16sp"
             android:gravity="center" />
 
-        <LinearLayout
-            android:id="@+id/dots_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="32dp"
-            android:gravity="center_vertical">
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:background="@drawable/dot_active" />
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/dot_inactive" />
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/dot_inactive" />
-        </LinearLayout>
-
     </LinearLayout>
 
+    <!-- Nut bat dau (Get Started) o duoi man hinh -->
     <Button
         android:id="@+id/btnGetStarted"
         android:layout_width="match_parent"

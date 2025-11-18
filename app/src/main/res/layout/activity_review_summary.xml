@@ -302,7 +302,7 @@
     </ScrollView>
 
     <!-- Pay Now Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnPayNow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -310,8 +310,9 @@
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-       android:background="@drawable/btn_rounded_blue"
         android:layout_margin="16dp"
         android:padding="16dp"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:background="@drawable/btn_rounded_blue"
+        app:backgroundTint="@null" />
 </LinearLayout>

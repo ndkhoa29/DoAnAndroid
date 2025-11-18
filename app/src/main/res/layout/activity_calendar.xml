@@ -121,6 +121,7 @@
             android:textStyle="bold" />
 
         <!-- Time selection as 2-column grid -->
+        <!-- Time selection as 2-column grid -->
         <GridLayout
             android:id="@+id/timeGrid"
             android:layout_marginTop="10dp"
@@ -171,6 +172,7 @@
                 android:background="@drawable/time_button_bg_default"
                 app:backgroundTint="@null" />
         </GridLayout>
+
 
         <!-- Continue Button -->
         <Button
