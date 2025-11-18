@@ -12,28 +12,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Header: Back + Title -->
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_arrow_back"
-                android:contentDescription="@string/back" />
+            <!-- Header giống Chi tiết dịch vụ -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="#007AFF"
+                android:padding="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chọn ngày và giờ cho dịch vụ"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_marginStart="8dp" />
+                <!-- Nút Back -->
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_back"
+                    android:padding="8dp"
+                    android:layout_centerVertical="true"
+                    app:tint="#FFFFFF" />
+
+                <!-- Tiêu đề -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chọn ngày và giờ cho dịch vụ"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
         </LinearLayout>
 
         <!-- Subtitle -->
