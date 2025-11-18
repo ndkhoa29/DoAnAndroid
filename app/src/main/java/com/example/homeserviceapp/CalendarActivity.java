@@ -1,11 +1,13 @@
 package com.example.homeserviceapp;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +21,8 @@ public class CalendarActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private TextView tvMonth;
-    private ImageButton btnBack, btnCalendarIcon, btnPrevMonth, btnNextMonth;
+    private ImageView btnBack;
+    private ImageButton btnCalendarIcon, btnPrevMonth, btnNextMonth;
     private Button btnTime1, btnTime2, btnTime3, btnTime4, btnContinue;
     private Button selectedTimeButton = null; // lưu button giờ đang chọn
     private Calendar calendar;
@@ -92,17 +95,8 @@ public class CalendarActivity extends AppCompatActivity {
 
         // -------------------- Continue --------------------
         btnContinue.setOnClickListener(v -> {
-            if (selectedTimeButton == null) {
-                Toast.makeText(this, "Vui lòng chọn giờ", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String selectedTime = selectedTimeButton.getText().toString();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String selectedDateStr = dateFormat.format(calendar.getTime());
-
-            // Xử lý tiếp (ví dụ gửi dữ liệu sang Activity khác hoặc API)
-            Toast.makeText(this, "Bạn chọn: " + selectedDateStr + " lúc " + selectedTime, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(CalendarActivity.this, ReviewSummaryActivity.class);
+            startActivity(intent);
         });
 
         // -------------------- Calendar Icon --------------------

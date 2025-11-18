@@ -48,7 +48,7 @@ public class ProfileFragment extends Fragment {
         menuMyProfile = view.findViewById(R.id.menuMyProfile);
 
         menuMyProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            Intent intent = new Intent(getActivity(), HoSoActivity.class);
             startActivity(intent);
         });
 

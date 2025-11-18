@@ -26,28 +26,14 @@ public class ManHinhGioiThieuActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_man_hinh_gioi_thieu);
 
-        // ID: btnGetStarted
         Button btnGetStarted = findViewById(R.id.btnGetStarted);
 
-        // Chuyển từ Giới thiệu -> Chi tiết Đơn hàng
+        // Chuyển từ Giới thiệu
         btnGetStarted.setOnClickListener(v -> {
-            Intent intent = new Intent(ManHinhGioiThieuActivity.this, ChiTietDonHangActivity.class);
+            Intent intent = new Intent(ManHinhGioiThieuActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
     }
 }
 
-
-        setContentView(R.layout.activity_man_hinh_gioi_thieu);
-
-        Button btnGetStarted;
-
-        btnGetStarted = findViewById(R.id.btnGetStarted);
-        btnGetStarted.setOnClickListener(v -> {
-            Intent intent = new Intent(ManHinhGioiThieuActivity.this, LoginActivity.class);
-            startActivity(intent);
-        });
-    }
-}
- main

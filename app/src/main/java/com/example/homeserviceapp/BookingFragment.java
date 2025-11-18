@@ -1,4 +1,5 @@
 package com.example.homeserviceapp;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,8 +55,35 @@ public class BookingFragment extends Fragment {
             loadChildFragment(new CancelledFragment());
         });
 
+
+        setClickForAllCards(view);
         return view;
     }
+
+    private void setClickForAllCards(View rootView) {
+        findAndSetClickListener(rootView);
+    }
+
+    private void findAndSetClickListener(View view) {
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+
+                if (child.getId() == R.id.cardItemBookingUpcoming) {
+                    child.setOnClickListener(v -> openServiceDetail());
+                }
+
+                findAndSetClickListener(child);
+            }
+        }
+    }
+
+    private void openServiceDetail() {
+        Intent intent = new Intent(getActivity(), ChiTietDonHangActivity.class);
+        startActivity(intent);
+    }
+
 
     // Load child fragment vào container
     private void loadChildFragment(Fragment fragment) {
@@ -63,6 +91,7 @@ public class BookingFragment extends Fragment {
         transaction.replace(R.id.tabContentContainer, fragment);
         transaction.commit();
     }
+
 
     // Cập nhật UI của tabs
     private void setActiveTab(int position) {

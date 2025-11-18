@@ -3,6 +3,7 @@ package com.example.homeserviceapp;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
-    ImageView btnChat, btnCall;
+    ImageView btnChat, btnCall, btnBack;
     Button btnBookNow;
 
     @Override
@@ -29,11 +30,17 @@ public class ServiceDetailActivity extends AppCompatActivity {
         btnChat = findViewById(R.id.btnChat);
         btnCall = findViewById(R.id.btnCall);
         btnBookNow = findViewById(R.id.btnBookNow);
+        btnBack = findViewById(R.id.btnBack);
 
-        // Nút chat (giả lập)
-        btnChat.setOnClickListener(v ->
-                Toast.makeText(this, "Đang mở chat với Nguyễn Văn A...", Toast.LENGTH_SHORT).show()
-        );
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
+
+        btnChat.setOnClickListener(v -> {
+            Intent intent = new Intent(ServiceDetailActivity.this, MessageActivity.class);
+            startActivity(intent);
+        });
+
 
         // Nút gọi điện
         btnCall.setOnClickListener(v -> {
@@ -43,15 +50,32 @@ public class ServiceDetailActivity extends AppCompatActivity {
         });
 
         // Nút "Đặt ngay" - Chuyển sang CalendarActivity
+//        btnBookNow.setOnClickListener(v -> {
+//            Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
+//
+//            // Có thể truyền thêm dữ liệu dịch vụ sang trang calendar
+//            intent.putExtra("service_name", "Dọn dẹp văn phòng");
+//            intent.putExtra("service_price", "75.000");
+//            intent.putExtra("provider_name", "Nguyễn Văn A");
+//
+//            startActivity(intent);
+//        });
+
         btnBookNow.setOnClickListener(v -> {
-            Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
+            try {
+                Log.d("ServiceDetail", "Bắt đầu chuyển sang CalendarActivity");
 
-            // Có thể truyền thêm dữ liệu dịch vụ sang trang calendar
-            intent.putExtra("service_name", "Dọn dẹp văn phòng");
-            intent.putExtra("service_price", "75.000");
-            intent.putExtra("provider_name", "Nguyễn Văn A");
+                Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
+                intent.putExtra("service_name", "Dọn dẹp văn phòng");
+                intent.putExtra("service_price", "75.000");
+                intent.putExtra("provider_name", "Nguyễn Văn A");
 
-            startActivity(intent);
+                startActivity(intent);
+                Log.d("ServiceDetail", "Đã gọi startActivity");
+            } catch (Exception e) {
+                Log.e("ServiceDetail", "Lỗi: " + e.getMessage());
+                Toast.makeText(ServiceDetailActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 

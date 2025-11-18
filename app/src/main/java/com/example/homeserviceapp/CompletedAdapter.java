@@ -1,5 +1,6 @@
 package com.example.homeserviceapp;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +39,17 @@ public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.View
         holder.tvPrice.setText(booking.getPrice());
         holder.ivServiceImage.setImageResource(booking.getImageResId());
 
-//        holder.btnRateService.setOnClickListener(
-//
-//        );
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), ChiTietDonHangActivity.class);
+            intent.putExtra("BOOKING_ID", booking.getBookingId());
+            intent.putExtra("SERVICE_NAME", booking.getServiceName());
+            intent.putExtra("DATE", booking.getDate());
+            intent.putExtra("TIME", booking.getTime());
+            intent.putExtra("LOCATION", booking.getLocation());
+            intent.putExtra("PRICE", booking.getPrice());
+            intent.putExtra("STATUS", "completed");
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override

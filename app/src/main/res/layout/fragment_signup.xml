@@ -65,6 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="86dp"
         android:layout_marginTop="24dp"
+        android:id="@+id/btnSignUp"
         android:text="Sign up"
         android:textColor="@color/white"
         android:textSize="16sp"

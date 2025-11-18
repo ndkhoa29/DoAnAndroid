@@ -1,9 +1,12 @@
 package com.example.homeserviceapp;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -62,7 +65,7 @@ public class BookingCompletedDialog extends Dialog {
 
     private void initViews() {
         btnGoToHome = findViewById(R.id.btnGoToHome);
-        btnViewBooking = findViewById(R.id.btnViewBooking);
+ //       btnViewBooking = findViewById(R.id.btnViewBooking);
         tvBookingId = findViewById(R.id.tvBookingId);
         iconSuccess = findViewById(R.id.iconSuccess);
         outerCircle = findViewById(R.id.outerCircle);
@@ -83,15 +86,25 @@ public class BookingCompletedDialog extends Dialog {
             }
         });
 
-        btnViewBooking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                if (listener != null) {
-                    listener.onViewBooking();
-                }
-            }
-        });
+//        btnViewBooking.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dismiss();
+//                if (listener != null) {
+//                    listener.onViewBooking();
+//                }
+//            }
+//        });
+
+
+//        btnViewBooking.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dismiss();
+//                Intent intent = new Intent(v.getContext(), BookingFragment.class);
+//                v.getContext().startActivity(intent);
+//            }
+//        });
     }
 
     private void startAnimations() {

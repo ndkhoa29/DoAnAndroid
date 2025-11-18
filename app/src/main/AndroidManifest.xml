@@ -17,10 +17,8 @@
         <activity android:name=".VerificationActivity" />
         <activity android:name=".ResetPasswordActivity" />
 
-        <!-- Màn chạy chính -->
-
 <!--        <activity-->
-<!--            android:name=".ManHinhGioiThieuActivity"-->
+<!--            android:name=".CalendarActivity"-->
 <!--            android:exported="true">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
@@ -37,8 +35,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ServiceDetailActivity"
+            android:exported="false" />
 
-        <!-- Các Activity bạn thêm -->
+        <activity
+            android:name=".CalendarActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ChiTietDonHangActivity"
             android:exported="false" />
@@ -55,8 +63,6 @@
             android:name=".ThongBaoActivity"
             android:exported="false" />
 
-        <!-- Các Activity từ nhánh remote -->
-
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -66,15 +72,12 @@
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity
-            android:name=".BookingCompletedDialog"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".BookingCompletedDialog"-->
+<!--            android:exported="false" />-->
 
         <activity
             android:name=".MessageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ThongBaoActivity"
             android:exported="false" />
 
         <activity
@@ -89,9 +92,7 @@
             android:name=".HomeActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".ServiceDetailActivity"
-            android:exported="false" />
+
 
         <activity
             android:name=".CategoryActivity"
@@ -105,9 +106,7 @@
             android:name=".ReviewSummaryActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".CalendarActivity"
-            android:exported="false" />
+
 
     </application>
 

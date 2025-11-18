@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
     private Handler sliderHandler = new Handler(Looper.getMainLooper());
     private TextView tvAllCategory, tvAllRated, tvAllPopular;
     private View dot1, dot2, dot3;
-    private ImageView ivNotification;
+    private ImageView ivNotification, icFilter;
 
     @Nullable
     @Override
@@ -46,6 +46,12 @@ public class HomeFragment extends Fragment {
         tvAllCategory = view.findViewById(R.id.tvAllCategory);
        tvAllRated = view.findViewById(R.id.tvAllRated);
         tvAllPopular = view.findViewById(R.id.tvAllPopular);
+        icFilter = view.findViewById(R.id.icFilter);
+
+        icFilter.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), TabServiceActivity.class);
+            startActivity(intent);
+        });
 
         ivNotification.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), ThongBaoActivity.class);

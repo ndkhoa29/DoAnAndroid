@@ -43,9 +43,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         btnGoToLogin.setOnClickListener(v -> {
             dialog.dismiss();
 
-            // Quay về màn hình Login và xóa hết các Activity
-            // Giả sử Activity Login/Sign up của bạn tên là MainActivity
-            Intent intent = new Intent(ResetPasswordActivity.this, MainActivity.class);
+            Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });

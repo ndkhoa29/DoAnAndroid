@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             loadFragment(new ProfileFragment());
             setActiveTab(3);
         });
+
     }
 
     private void loadFragment(Fragment fragment) {
