@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Trang dau -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -37,7 +36,6 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <!-- Order Info Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,7 +91,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Payment Method Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -136,7 +133,6 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Service Provider Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,7 +143,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Provider Info Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -158,6 +153,7 @@
             app:cardElevation="2dp">
 
             <RelativeLayout
+                android:id="@+id/providerContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp">
@@ -222,7 +218,6 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Service Details Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -330,7 +325,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Payment Summary Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -341,7 +335,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Payment Summary Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

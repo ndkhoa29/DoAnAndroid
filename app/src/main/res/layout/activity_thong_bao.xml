@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/btnQuayLai"
-            android:layout_width="24dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:src="@drawable/ic_back_arrow"
-            android:contentDescription="Quay lại" />
+            android:contentDescription="Quay lại"
+            android:src="@drawable/ic_back_arrow" />
 
         <TextView
             android:layout_width="0dp"
