@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#F5F5F5">
 
-    <!-- Thanh tieu đe -->
+    <!-- Thanh tiêu đề -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,16 +17,16 @@
 
         <ImageView
             android:id="@+id/btnQuayLai"
-            android:layout_width="24dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:src="@drawable/ic_back_arrow"
-            android:contentDescription="Quay lại" />
+            android:contentDescription="Quay lại"
+            android:src="@drawable/ic_back_arrow" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Notifications"
+            android:text="Thông báo"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#000000"
@@ -38,7 +38,7 @@
 
     </LinearLayout>
 
-    <!-- Danh sach thong bao -->
+    <!-- Danh sách thông báo -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -49,7 +49,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Thong bao 1: Đat phong thanh cong -->
+            <!-- Thông báo 1: Đặt phòng thành công -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Booking Successful!"
+                            android:text="Đặt phòng thành công!"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -91,7 +91,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1 hr ago"
+                            android:text="1 giờ trước"
                             android:textSize="12sp"
                             android:textColor="#999999" />
                     </LinearLayout>
@@ -99,7 +99,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="You have successfully booked the"
+                        android:text="Bạn đã đặt phòng thành công."
                         android:textSize="14sp"
                         android:textColor="#666666"
                         android:layout_marginTop="4dp" />
@@ -108,7 +108,7 @@
 
             </LinearLayout>
 
-            <!-- Thong bao 2: Quen mat khau -->
+            <!-- Thông báo 2: Quên mật khẩu -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Forgot Password"
+                            android:text="Quên mật khẩu"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -150,7 +150,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2 hr ago"
+                            android:text="2 giờ trước"
                             android:textSize="12sp"
                             android:textColor="#999999" />
                     </LinearLayout>
@@ -158,7 +158,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="You have successfully booked the"
+                        android:text="Bạn đã yêu cầu đặt lại mật khẩu thành công."
                         android:textSize="14sp"
                         android:textColor="#666666"
                         android:layout_marginTop="4dp" />
@@ -167,7 +167,7 @@
 
             </LinearLayout>
 
-            <!-- Thong bao 3: Ket noi the tin dung -->
+            <!-- Thông báo 3: Kết nối thẻ tín dụng -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,7 +201,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Credit Card Connected!"
+                            android:text="Kết nối thẻ tín dụng!"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -209,7 +209,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3 hr ago"
+                            android:text="3 giờ trước"
                             android:textSize="12sp"
                             android:textColor="#999999" />
                     </LinearLayout>
@@ -217,7 +217,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="You have successfully booked the"
+                        android:text="Bạn đã kết nối thẻ tín dụng thành công."
                         android:textSize="14sp"
                         android:textColor="#666666"
                         android:layout_marginTop="4dp" />
@@ -226,7 +226,7 @@
 
             </LinearLayout>
 
-            <!-- Thong bao 4: Thiet lap tai khoan -->
+            <!-- Thông báo 4: Thiết lập tài khoản -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Account Setup"
+                            android:text="Thiết lập tài khoản"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -267,7 +267,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2 hr ago"
+                            android:text="2 giờ trước"
                             android:textSize="12sp"
                             android:textColor="#999999" />
                     </LinearLayout>
@@ -275,7 +275,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="You have successfully booked the"
+                        android:text="Bạn đã thiết lập tài khoản thành công."
                         android:textSize="14sp"
                         android:textColor="#666666"
                         android:layout_marginTop="4dp" />
