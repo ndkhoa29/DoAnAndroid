@@ -4,13 +4,12 @@
     <color name="color_primary">#0D8DE9</color>
     <color name="color_text_light">#808080</color>
     <color name="color_text_dark">#000000</color>
-    <color name="white">#FFFFFF</color>
-</resources>
-
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="gray">#666666</color>
+    <color name="blue">#2196F3</color>
+
     <color name="blue_primary">#1E88E5</color>
     <color name="green_call">#4CAF50</color>
     <color name="blue_message">#2196F3</color>
@@ -18,16 +17,11 @@
     <color name="status_completed">#4CAF50</color>
     <color name="status_cancelled">#F44336</color>
     <color name="save_background">#2196F3</color>
-</resources>
 
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="blue">#2196F3</color>
-    <color name="gray">#666666</color>
     <color name="design_default_color_primary">#2196F3</color>
     <color name="design_default_color_primary_light">#81D4FA</color>
     <color name="chip_default_bg">#F0F0F0</color>
     <color name="chip_default_text">#000000</color>
     <color name="hex">#657BAA</color>
-</resources>
 
+</resources>

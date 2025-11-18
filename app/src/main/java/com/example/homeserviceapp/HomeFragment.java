@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,7 @@ public class HomeFragment extends Fragment {
     private Handler sliderHandler = new Handler(Looper.getMainLooper());
     private TextView tvAllCategory, tvAllRated, tvAllPopular;
     private View dot1, dot2, dot3;
+    private ImageView ivNotification;
 
     @Nullable
     @Override
@@ -39,9 +42,15 @@ public class HomeFragment extends Fragment {
         dot2 = view.findViewById(R.id.dot2);
         dot3 = view.findViewById(R.id.dot3);
 
+        ivNotification= view.findViewById(R.id.ivNotification);
         tvAllCategory = view.findViewById(R.id.tvAllCategory);
        tvAllRated = view.findViewById(R.id.tvAllRated);
         tvAllPopular = view.findViewById(R.id.tvAllPopular);
+
+        ivNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ThongBaoActivity.class);
+            startActivity(intent);
+        });
 
         tvAllCategory.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), CategoryActivity.class);
@@ -79,9 +88,36 @@ public class HomeFragment extends Fragment {
 
         sliderHandler.postDelayed(sliderRunnable, 3000);
 
+        setClickForAllCards(view);
+
         return view;
+
     }
 
+
+    private void setClickForAllCards(View rootView) {
+        findAndSetClickListener(rootView);
+    }
+
+    private void findAndSetClickListener(View view) {
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+
+                if (child.getId() == R.id.cardServiceItem) {
+                    child.setOnClickListener(v -> openServiceDetail());
+                }
+
+                findAndSetClickListener(child);
+            }
+        }
+    }
+
+    private void openServiceDetail() {
+        Intent intent = new Intent(getActivity(), ServiceDetailActivity.class);
+        startActivity(intent);
+    }
 
 
 

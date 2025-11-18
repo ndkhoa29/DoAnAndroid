@@ -34,6 +34,16 @@ public class ProfileFragment extends Fragment {
         menuSettings = view.findViewById(R.id.menuSettings);
         menuLogout = view.findViewById(R.id.menuLogout);
 
+        menuNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ThongBaoActivity.class);
+            startActivity(intent);
+        });
+
+        menuMyBooking.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToBooking();
+            }
+        });
 
         menuMyProfile = view.findViewById(R.id.menuMyProfile);
 
