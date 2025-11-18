@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"  android:padding="32dp">
+    android:background="#FFFFFF"
+    android:padding="32dp">
 
-    <!-- Khung chua noi dung chinh -->
+    <!-- Khung chứa nội dung chính -->
     <LinearLayout
         android:id="@+id/content_container"
         android:layout_width="match_parent"
@@ -13,28 +14,28 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Logo ung dung -->
+        <!-- Logo ứng dụng -->
         <ImageView
             android:id="@+id/app_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_logo"
             android:adjustViewBounds="true"
-            android:contentDescription="App Logo" />
+            android:contentDescription="Logo ứng dụng" />
 
-        <!-- Tieu de chinh -->
+        <!-- Tiêu đề chính -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Ultimate House Cleaning Services"
+            android:text="DỊCH VỤ VỆ SINH NHÀ CỬA TOÀN DIỆN"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             android:gravity="center" />
 
-        <!-- Mo ta ngan ve dich vu -->
+        <!-- Mô tả ngắn về dịch vụ -->
         <TextView
             android:id="@+id/tv_description"
             android:layout_width="wrap_content"
@@ -42,12 +43,12 @@
             android:layout_marginTop="8dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:text="Interior and exterior window washing to let the light shine through."
+            android:text="Vệ sinh cửa sổ trong và ngoài để ánh sáng tràn ngập căn nhà."
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:gravity="center" />
 
-        <!-- Thanh chi dan trang hien tai (dots) -->
+        <!-- Thanh chỉ dẫn trang hiện tại (dots) -->
         <LinearLayout
             android:id="@+id/dots_indicator"
             android:layout_width="wrap_content"
@@ -56,18 +57,18 @@
             android:layout_marginTop="32dp"
             android:gravity="center_vertical">
 
-            <!-- Dot hien tai -->
+            <!-- Dot hiện tại -->
             <View
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:background="@drawable/dot_active" />
-            <!-- Dot khong active -->
+            <!-- Dot không active -->
             <View
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/dot_inactive" />
-            <!-- Dot khong active -->
+            <!-- Dot không active -->
             <View
                 android:layout_width="8dp"
                 android:layout_height="8dp"
@@ -77,13 +78,13 @@
 
     </LinearLayout>
 
-    <!-- Nut bat dau (Get Started) o duoi man hinh -->
+    <!-- Nút Bắt đầu ở dưới màn hình -->
     <Button
         android:id="@+id/btnGetStarted"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Get Started"
+        android:text="Bắt đầu"
         android:textColor="@android:color/white"
         android:background="@drawable/button_background"
         android:minHeight="56dp"

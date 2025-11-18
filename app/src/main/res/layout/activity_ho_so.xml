@@ -10,13 +10,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Thanh dau trang -->
+        <!-- Thanh đầu trang -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@color/white">
 
-            <!-- Nut quay lai -->
+            <!-- Nút quay lại -->
             <ImageButton
                 android:id="@+id/nutQuayLai"
                 android:layout_width="48dp"
@@ -25,20 +25,20 @@
                 android:layout_marginStart="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back_arrow"
-                android:contentDescription="Quay lai" />
+                android:contentDescription="Quay lại" />
 
-            <!-- Tieu de man hinh -->
+            <!-- Tiêu đề màn hình -->
             <TextView
                 android:id="@+id/tieuDeManHinh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="My Frofile"
+                android:text="Hồ sơ của tôi"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- Nut chinh sua o phia tren ben phai -->
+            <!-- Nút chỉnh sửa ở trên bên phải -->
             <ImageButton
                 android:id="@+id/nutChinhSua"
                 android:layout_width="48dp"
@@ -48,17 +48,17 @@
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_edit"
-                android:contentDescription="Chinh sua" />
+                android:contentDescription="Chỉnh sửa" />
         </RelativeLayout>
 
-        <!-- Anh dai dien / Avatar -->
+        <!-- Ảnh đại diện / Avatar -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp">
 
-            <!-- Anh dai dien hinh tron -->
+            <!-- Ảnh đại diện hình tròn -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/anhDaiDien"
                 android:layout_width="120dp"
@@ -69,7 +69,7 @@
                 app:civ_border_width="2dp" />
         </RelativeLayout>
 
-        <!-- Truong Ho va ten -->
+        <!-- Trường Họ và Tên -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,22 +78,22 @@
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
-            <!-- Label Ho va ten -->
+            <!-- Nhãn Họ và Tên -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Ho va ten"
+                android:text="Họ và tên"
                 android:textColor="@color/gray"
                 android:textSize="12sp" />
 
-            <!-- Input Ho va ten -->
+            <!-- Input Họ và Tên -->
             <EditText
                 android:id="@+id/nhapHoVaTen"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Nhap ho va ten"
+                android:hint="Nhập họ và tên"
                 android:text="abc"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
@@ -102,7 +102,7 @@
                 android:inputType="textPersonName" />
         </LinearLayout>
 
-        <!-- Truong Email -->
+        <!-- Trường Email -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,12 +111,12 @@
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
-            <!-- Label Email -->
+            <!-- Nhãn Email -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Dia chi email"
+                android:text="Địa chỉ email"
                 android:textColor="@color/gray"
                 android:textSize="12sp" />
 
@@ -126,8 +126,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Nhap dia chi email"
-                android:text="abc2gmail.com"
+                android:hint="Nhập địa chỉ email"
+                android:text="abc2@gmail.com"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:textColor="@color/black"
@@ -135,7 +135,7 @@
                 android:inputType="textEmailAddress" />
         </LinearLayout>
 
-        <!-- Truong So dien thoai -->
+        <!-- Trường Số điện thoại -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -144,16 +144,16 @@
             android:layout_marginBottom="32dp"
             android:orientation="vertical">
 
-            <!-- Label So dien thoai -->
+            <!-- Nhãn Số điện thoại -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="So dien thoai"
+                android:text="Số điện thoại"
                 android:textColor="@color/gray"
                 android:textSize="12sp" />
 
-            <!-- Input So dien thoai kem vien -->
+            <!-- Input Số điện thoại -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -161,17 +161,14 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <!-- Vien ben trai -->
-
-                <!-- EditText So dien thoai -->
                 <EditText
                     android:id="@+id/nhapSoDienThoai"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="Nhap so dien thoai"
-                    android:text="9956358965"
+                    android:hint="Nhập số điện thoại"
+                    android:text="09956358965"
                     android:paddingStart="8dp"
                     android:paddingEnd="16dp"
                     android:textColor="@color/black"
@@ -180,7 +177,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Nut Luu thay doi -->
+
 
     </LinearLayout>
 </ScrollView>
