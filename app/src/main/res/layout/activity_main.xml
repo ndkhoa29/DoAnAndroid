@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Container để load Fragment -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
@@ -13,7 +12,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"/>
 
-    <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -24,7 +22,7 @@
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Trang chu -->
+        <!-- Home -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
@@ -40,7 +38,8 @@
                 android:id="@+id/ivHome"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_home"/>
+                android:src="@drawable/ic_home"
+                android:tint="@color/blue"/>
 
             <TextView
                 android:id="@+id/tvHome"
@@ -52,7 +51,6 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <!-- Ho tro-->
         <LinearLayout
             android:id="@+id/navMessage"
             android:layout_width="0dp"
@@ -68,7 +66,8 @@
                 android:id="@+id/ivMessage"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_message"/>
+                android:src="@drawable/ic_message"
+                android:tint="@color/gray"/>
 
             <TextView
                 android:id="@+id/tvMessage"
@@ -80,7 +79,6 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <!-- Dat lich -->
         <LinearLayout
             android:id="@+id/navBooking"
             android:layout_width="0dp"
@@ -96,7 +94,8 @@
                 android:id="@+id/ivBooking"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_booking"/>
+                android:src="@drawable/ic_booking"
+                android:tint="@color/gray"/>
 
             <TextView
                 android:id="@+id/tvBooking"
@@ -108,7 +107,6 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <!-- Ho so -->
         <LinearLayout
             android:id="@+id/navProfile"
             android:layout_width="0dp"
@@ -124,7 +122,8 @@
                 android:id="@+id/ivProfile"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_profile"/>
+                android:src="@drawable/ic_profile"
+                android:tint="@color/gray"/>
 
             <TextView
                 android:id="@+id/tvProfile"

@@ -1,22 +1,15 @@
 package com.example.homeserviceapp;
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         tvProfile = findViewById(R.id.tvProfile);
 
         loadFragment(new HomeFragment());
+        setActiveTab(0);
 
         navHome.setOnClickListener(v -> {
             loadFragment(new HomeFragment());
@@ -52,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         navMessage.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, MessageActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, MessageActivity.class));
         });
 
         navBooking.setOnClickListener(v -> {
@@ -73,34 +66,50 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    // Method public để các Fragment có thể gọi
+    public void navigateToBooking() {
+        loadFragment(new BookingFragment());
+        setActiveTab(2);
+    }
+//    public void navigateToBooking() {
+//        loadFragment(new BookingFragment());
+//        setActiveTab(2);
+//    }
+//    public void navigateToBooking() {
+//        loadFragment(new BookingFragment());
+//        setActiveTab(2);
+//    }
+
     private void setActiveTab(int position) {
-        ivHome.setColorFilter(ContextCompat.getColor(this, R.color.gray));
-        ivMessage.setColorFilter(ContextCompat.getColor(this, R.color.gray));
-        ivBooking.setColorFilter(ContextCompat.getColor(this, R.color.gray));
-        ivProfile.setColorFilter(ContextCompat.getColor(this, R.color.gray));
+        int gray = ContextCompat.getColor(this, R.color.gray);
+        int active = ContextCompat.getColor(this, R.color.blue);
 
-        tvHome.setTextColor(ContextCompat.getColor(this, R.color.gray));
-        tvMessage.setTextColor(ContextCompat.getColor(this, R.color.gray));
-        tvBooking.setTextColor(ContextCompat.getColor(this, R.color.gray));
-        tvProfile.setTextColor(ContextCompat.getColor(this, R.color.gray));
+        ivHome.setColorFilter(gray);
+        ivMessage.setColorFilter(gray);
+        ivBooking.setColorFilter(gray);
+        ivProfile.setColorFilter(gray);
 
-        int activeColor = ContextCompat.getColor(this, R.color.blue);
+        tvHome.setTextColor(gray);
+        tvMessage.setTextColor(gray);
+        tvBooking.setTextColor(gray);
+        tvProfile.setTextColor(gray);
+
         switch (position) {
             case 0:
-                ivHome.setColorFilter(activeColor);
-                tvHome.setTextColor(activeColor);
+                ivHome.setColorFilter(active);
+                tvHome.setTextColor(active);
                 break;
             case 1:
-                ivMessage.setColorFilter(activeColor);
-                tvMessage.setTextColor(activeColor);
+                ivMessage.setColorFilter(active);
+                tvMessage.setTextColor(active);
                 break;
             case 2:
-                ivBooking.setColorFilter(activeColor);
-                tvBooking.setTextColor(activeColor);
+                ivBooking.setColorFilter(active);
+                tvBooking.setTextColor(active);
                 break;
             case 3:
-                ivProfile.setColorFilter(activeColor);
-                tvProfile.setTextColor(activeColor);
+                ivProfile.setColorFilter(active);
+                tvProfile.setTextColor(active);
                 break;
         }
     }
