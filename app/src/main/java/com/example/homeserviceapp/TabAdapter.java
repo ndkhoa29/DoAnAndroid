@@ -18,10 +18,8 @@ public class TabAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Tạo Fragment mới cho mỗi tab
         ServiceListFragment fragment = new ServiceListFragment();
 
-        // Truyền tên danh mục vào Fragment để nó có thể tải dữ liệu tương ứng
         Bundle args = new Bundle();
         args.putString("CATEGORY_NAME", tabTitles[position]);
         fragment.setArguments(args);

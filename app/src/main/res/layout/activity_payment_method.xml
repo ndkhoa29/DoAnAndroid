@@ -23,7 +23,6 @@
             android:layout_centerVertical="true"
             app:tint="#FFFFFF" />
 
-        <!-- Tiêu đề -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +34,6 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-    <!-- Payment Methods List -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"

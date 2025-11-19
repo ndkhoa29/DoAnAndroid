@@ -22,9 +22,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         imgBack.setOnClickListener(v -> finish());
 
-        // Khi nhấn nút "Reset Password"
         btnReset.setOnClickListener(v -> {
-            // (Sau khi kiểm tra mật khẩu mới và xác nhận mật khẩu khớp nhau)
             showSuccessDialog();
         });
     }
@@ -33,7 +31,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_password_success);
 
-        // Làm cho nền dialog trong suốt (để thấy bo tròn)
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }

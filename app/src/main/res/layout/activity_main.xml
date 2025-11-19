@@ -22,7 +22,6 @@
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Home -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"

@@ -28,7 +28,6 @@ public class ManHinhGioiThieuActivity extends AppCompatActivity {
 
         Button btnGetStarted = findViewById(R.id.btnGetStarted);
 
-        // Chuyển từ Giới thiệu
         btnGetStarted.setOnClickListener(v -> {
             Intent intent = new Intent(ManHinhGioiThieuActivity.this, LoginActivity.class);
             startActivity(intent);

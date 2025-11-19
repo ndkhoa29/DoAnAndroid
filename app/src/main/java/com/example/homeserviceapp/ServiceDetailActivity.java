@@ -21,7 +21,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_detail);
 
-        // Thêm nút Back trên ActionBar
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Chi tiết dịch vụ");
@@ -42,7 +41,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         });
 
 
-        // Nút gọi điện
         btnCall.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:+1800123456"));
@@ -79,7 +77,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         });
     }
 
-    // Xử lý sự kiện khi nhấn nút Back trên ActionBar
     @Override
     public boolean onSupportNavigateUp() {
         finish();

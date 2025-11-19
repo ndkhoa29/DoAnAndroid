@@ -8,7 +8,6 @@
     android:background="#FFFFFF"
     android:padding="32dp">
 
-    <!-- Khung chứa nội dung chính -->
     <LinearLayout
         android:id="@+id/content_container"
         android:layout_width="match_parent"
@@ -17,7 +16,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Logo ứng dụng -->
         <ImageView
             android:id="@+id/app_logo"
             android:layout_width="wrap_content"
@@ -26,7 +24,6 @@
             android:adjustViewBounds="true"
             android:contentDescription="Logo ứng dụng" />
 
-        <!-- Tiêu đề chính -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -38,7 +35,6 @@
             android:textStyle="bold"
             android:gravity="center" />
 
-        <!-- Mô tả ngắn về dịch vụ -->
         <TextView
             android:id="@+id/tv_description"
             android:layout_width="wrap_content"
@@ -51,7 +47,6 @@
             android:textSize="16sp"
             android:gravity="center" />
 
-        <!-- Thanh chỉ dẫn trang hiện tại (dots) -->
         <LinearLayout
             android:id="@+id/dots_indicator"
             android:layout_width="wrap_content"
@@ -60,18 +55,15 @@
             android:layout_marginTop="32dp"
             android:gravity="center_vertical">
 
-            <!-- Dot hiện tại -->
             <View
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:background="@drawable/dot_active" />
-            <!-- Dot không active -->
             <View
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/dot_inactive" />
-            <!-- Dot không active -->
             <View
                 android:layout_width="8dp"
                 android:layout_height="8dp"
@@ -81,7 +73,6 @@
 
     </LinearLayout>
 
-    <!-- Nút Bắt đầu ở dưới màn hình -->
     <Button
         android:id="@+id/btnGetStarted"
         android:layout_width="match_parent"

@@ -23,7 +23,6 @@ public class ServiceListFragment extends Fragment {
     private String categoryName;
 
     public ServiceListFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -57,9 +56,6 @@ public class ServiceListFragment extends Fragment {
         recyclerView.setAdapter(serviceAdapter);
     }
 
-    /**
-     * CẬP NHẬT: Tải dữ liệu mẫu (dummy data)
-     */
     private void loadServiceData(String category) {
         serviceList.clear();
 

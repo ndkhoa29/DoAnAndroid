@@ -19,9 +19,8 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
 
         btnBack = findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(v -> finish()); // Quay lại màn hình trước đó
+        btnBack.setOnClickListener(v -> finish());
 
-        // Thiết lập OnClickListener cho từng danh mục
         setCategoryClickListener(findViewById(R.id.category_cleaning), "Cleaning");
         setCategoryClickListener(findViewById(R.id.category_repairing), "Repairing");
         setCategoryClickListener(findViewById(R.id.category_laundry), "Laundry");
@@ -37,7 +36,6 @@ public class CategoryActivity extends AppCompatActivity {
     private void setCategoryClickListener(LinearLayout categoryLayout, String categoryName) {
         categoryLayout.setOnClickListener(v -> {
             Toast.makeText(CategoryActivity.this, "Selected: " + categoryName, Toast.LENGTH_SHORT).show();
-            // Thêm logic xử lý khi chọn danh mục (ví dụ: chuyển sang màn hình khác)
         });
     }
 }

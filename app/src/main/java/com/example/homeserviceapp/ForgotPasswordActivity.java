@@ -20,9 +20,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         imgBack.setOnClickListener(v -> finish()); // Quay lại màn hình trước
 
         btnContinue.setOnClickListener(v -> {
-            // Chuyển sang màn hình Verification
             Intent intent = new Intent(ForgotPasswordActivity.this, VerificationActivity.class);
-            // Bạn có thể gửi email qua đây: intent.putExtra("email", email);
+
             startActivity(intent);
         });
     }

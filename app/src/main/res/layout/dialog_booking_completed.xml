@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_rounded_background">
 
-    <!-- Card Container -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,13 +20,11 @@
             android:orientation="vertical"
             android:padding="32dp">
 
-            <!-- Success Icon with Animation Container -->
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp">
 
-                <!-- Outer Circle (Animated) -->
                 <View
                     android:id="@+id/outerCircle"
                     android:layout_width="120dp"
@@ -35,7 +32,6 @@
                     android:alpha="0.2"
                     android:background="@drawable/circle_success_outer" />
 
-                <!-- Success Circle -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -54,7 +50,6 @@
                 </androidx.cardview.widget.CardView>
             </RelativeLayout>
 
-            <!-- Title with gradient text effect -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +60,6 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <!-- Description -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +70,6 @@
                 android:textColor="#666666"
                 android:textSize="15sp" />
 
-            <!-- Booking ID (Optional) -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,14 +97,12 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Buttons Container -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <!-- Go to Home Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGoToHome"
                     android:layout_width="match_parent"

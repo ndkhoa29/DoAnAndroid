@@ -108,7 +108,7 @@ public class BookingFragment extends Fragment {
         indicatorCompleted.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent));
         indicatorCancelled.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.transparent));
 
-        // Set active tab
+        // Set tab
         int activeColor = ContextCompat.getColor(requireContext(), R.color.blue);
         switch (position) {
             case 0:

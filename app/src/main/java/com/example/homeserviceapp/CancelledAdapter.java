@@ -41,7 +41,6 @@ public class CancelledAdapter extends RecyclerView.Adapter<CancelledAdapter.View
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ChiTietDonHangActivity.class);
-            // Truyền dữ liệu booking qua Intent nếu cần
             intent.putExtra("BOOKING_ID", booking.getBookingId());
             intent.putExtra("SERVICE_NAME", booking.getServiceName());
             intent.putExtra("DATE", booking.getDate());

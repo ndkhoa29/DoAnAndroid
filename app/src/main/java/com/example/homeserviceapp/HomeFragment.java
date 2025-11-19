@@ -36,7 +36,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // ViewPager banner
         viewPagerBanner = view.findViewById(R.id.viewPagerBanner);
         dot1 = view.findViewById(R.id.dot1);
         dot2 = view.findViewById(R.id.dot2);
@@ -73,7 +72,6 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
-        // Banner setup
         bannerList = new ArrayList<>();
         bannerList.add(new BannerItem(R.drawable.banner1));
         bannerList.add(new BannerItem(R.drawable.banner2));

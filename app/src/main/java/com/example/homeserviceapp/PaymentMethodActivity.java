@@ -60,22 +60,18 @@ public class PaymentMethodActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Back button
         btnBack.setOnClickListener(v -> finish());
 
-        // Map CardViews -> RadioButtons -> PaymentMethod
         setupPaymentCard(cardMomo, rbMomo, "MoMo");
         setupPaymentCard(cardVnpay, rbVnpay, "VNPay");
         setupPaymentCard(cardZalopay, rbZalopay, "ZaloPay");
         setupPaymentCard(cardViettelMoney, rbViettelMoney, "Viettel Money");
 
-        // Add new card
         btnAddNewCard.setOnClickListener(v ->
                 Toast.makeText(PaymentMethodActivity.this,
                         "Chức năng thêm thẻ mới", Toast.LENGTH_SHORT).show()
         );
 
-        // Pay Now
         btnPayNow.setOnClickListener(v -> processPayment());
     }
 
@@ -106,13 +102,11 @@ public class PaymentMethodActivity extends AppCompatActivity {
     }
 
     private void selectPaymentMethod(String method, RadioButton selectedRadio) {
-        // Uncheck all
         rbMomo.setChecked(false);
         rbVnpay.setChecked(false);
         rbZalopay.setChecked(false);
         rbViettelMoney.setChecked(false);
 
-        // Check selected
         selectedRadio.setChecked(true);
         selectedPaymentMethod = method;
 

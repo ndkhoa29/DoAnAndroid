@@ -33,7 +33,6 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        // Ánh xạ view
         calendarView = findViewById(R.id.calendarView);
         tvMonth = findViewById(R.id.tvMonth);
 
@@ -67,7 +66,7 @@ public class CalendarActivity extends AppCompatActivity {
             calendarView.setDate(calendar.getTimeInMillis(), false, true);
         });
 
-        // Chọn ngày trong CalendarView
+        // Chọn ngày trong lịch
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
@@ -75,10 +74,11 @@ public class CalendarActivity extends AppCompatActivity {
             updateMonthLabel();
         });
 
-        // -------------------- Nút Back --------------------
+
+
         btnBack.setOnClickListener(v -> finish());
 
-        // -------------------- Chọn giờ --------------------
+
         View.OnClickListener timeClickListener = v -> {
             Button clicked = (Button) v;
             if (selectedTimeButton != null) {
@@ -93,38 +93,32 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime3.setOnClickListener(timeClickListener);
         btnTime4.setOnClickListener(timeClickListener);
 
-        // -------------------- Continue --------------------
         btnContinue.setOnClickListener(v -> {
             Intent intent = new Intent(CalendarActivity.this, ReviewSummaryActivity.class);
             startActivity(intent);
         });
 
-        // -------------------- Calendar Icon --------------------
         btnCalendarIcon.setOnClickListener(v -> {
             // Lấy ngày hiện tại
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            // Tạo DatePickerDialog
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     CalendarActivity.this,
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        // Cập nhật Calendar
+
                         calendar.set(Calendar.YEAR, selectedYear);
                         calendar.set(Calendar.MONTH, selectedMonth);
                         calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
 
-                        // Cập nhật CalendarView
                         calendarView.setDate(calendar.getTimeInMillis(), false, true);
 
-                        // Cập nhật nhãn tháng
                         updateMonthLabel();
                     },
                     year, month, day
             );
 
-            // Hiển thị dialog
             datePickerDialog.show();
         });
     }

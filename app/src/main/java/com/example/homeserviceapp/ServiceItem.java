@@ -2,10 +2,9 @@ package com.example.homeserviceapp;
 
 public class ServiceItem {
     private String title;
-    // THAY ĐỔI: Chuyển price từ String thành int (hoặc double)
     private int price;
     private float rating;
-    private int reviewCount; // THÊM MỚI: Để sắp xếp theo "nhiều đánh giá nhất"
+    private int reviewCount;
     private int imageResource;
 
     public ServiceItem(String title, int price, float rating, int reviewCount, int imageResource) {
@@ -16,7 +15,6 @@ public class ServiceItem {
         this.imageResource = imageResource;
     }
 
-    // Getters
     public String getTitle() { return title; }
     public int getPrice() { return price; } // Sửa kiểu trả về
     public float getRating() { return rating; }

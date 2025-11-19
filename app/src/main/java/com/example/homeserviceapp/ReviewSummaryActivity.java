@@ -42,7 +42,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_summary);
 
-        // Thêm callback để xử lý back button và back gesture
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -72,7 +71,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Nút Back - quay về màn hình Calendar
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +78,7 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             }
         });
 
-        // Click vào payment method card để mở màn hình chọn phương thức thanh toán
+        // Click vào payment để mở màn hình chọn phương thức thanh toán
         cardPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,25 +103,20 @@ public class ReviewSummaryActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        // Load data from Intent or database
-        // For demo purposes, using hardcoded values
         tvServiceName.setText("Dọn dẹp văn phòng");
         tvAddress.setText("15 Trưng Nữ Vương, Hải Châu, Đà Nẵng");
         tvDate.setText("16 tháng 11, 2023");
         tvTime.setText("08:00 AM");
 
-        // Format prices
         tvPrice.setText(String.format("$%.2f", price));
         tvTax.setText(String.format("$%.2f", tax));
         tvTotalPrice.setText(String.format("$%.2f", totalPrice));
 
-        // Set default payment method
         tvPaymentMethodName.setText(selectedPaymentMethod);
         rbGooglePay.setChecked(true);
     }
 
     private void navigateToCalendar() {
-        // Quay về màn hình Calendar
         Intent intent = new Intent(ReviewSummaryActivity.this, CalendarActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
@@ -172,11 +165,9 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             return;
         }
 
-        // Show loading message
         Toast.makeText(this, "Đang xử lý thanh toán qua " + selectedPaymentMethod + "...",
                 Toast.LENGTH_SHORT).show();
 
-        // Simulate payment processing delay
         btnPayNow.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -199,7 +190,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
 
             @Override
             public void onViewBooking() {
-                // Navigate to booking details screen
                 Toast.makeText(ReviewSummaryActivity.this,
                         "Xem chi tiết đặt dịch vụ", Toast.LENGTH_SHORT).show();
                 // Uncomment khi có BookingDetailsActivity

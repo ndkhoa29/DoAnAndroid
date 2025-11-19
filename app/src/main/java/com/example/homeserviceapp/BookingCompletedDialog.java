@@ -49,12 +49,10 @@ public class BookingCompletedDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_booking_completed);
 
-        // Make dialog background transparent
         if (getWindow() != null) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
-        // Make dialog not cancelable by touching outside
         setCancelable(false);
         setCanceledOnTouchOutside(false);
 
@@ -70,7 +68,6 @@ public class BookingCompletedDialog extends Dialog {
         iconSuccess = findViewById(R.id.iconSuccess);
         outerCircle = findViewById(R.id.outerCircle);
 
-        // Generate random booking ID
         String bookingId = "#DV" + (100000 + (int)(Math.random() * 900000));
         tvBookingId.setText(bookingId);
     }
@@ -121,14 +118,12 @@ public class BookingCompletedDialog extends Dialog {
         iconAnimSet.setStartDelay(200);
         iconAnimSet.start();
 
-        // Rotation animation for icon
         ObjectAnimator rotate = ObjectAnimator.ofFloat(iconSuccess, "rotation", 0f, 360f);
         rotate.setDuration(800);
         rotate.setStartDelay(200);
         rotate.setInterpolator(new AccelerateDecelerateInterpolator());
         rotate.start();
 
-        // Pulse animation for outer circle
         ObjectAnimator pulseX = ObjectAnimator.ofFloat(outerCircle, "scaleX", 1f, 1.2f, 1f);
         ObjectAnimator pulseY = ObjectAnimator.ofFloat(outerCircle, "scaleY", 1f, 1.2f, 1f);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(outerCircle, "alpha", 0.2f, 0.5f, 0.2f);
@@ -145,7 +140,6 @@ public class BookingCompletedDialog extends Dialog {
         pulseAnimSet.playTogether(pulseX, pulseY, alpha);
         pulseAnimSet.start();
 
-        // Slide up animation for buttons
         ObjectAnimator slideUp1 = ObjectAnimator.ofFloat(btnGoToHome, "translationY", 200f, 0f);
         slideUp1.setDuration(500);
         slideUp1.setStartDelay(400);
@@ -158,7 +152,6 @@ public class BookingCompletedDialog extends Dialog {
         slideUp2.setInterpolator(new OvershootInterpolator());
         slideUp2.start();
 
-        // Fade in for buttons
         ObjectAnimator fadeIn1 = ObjectAnimator.ofFloat(btnGoToHome, "alpha", 0f, 1f);
         fadeIn1.setDuration(400);
         fadeIn1.setStartDelay(400);

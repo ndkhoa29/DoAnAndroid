@@ -14,7 +14,7 @@ public class AuthenticationPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Trả về fragment tương ứng với vị trí (position)
+        // Trả về fragment tương ứng với vị trí
         switch (position) {
             case 0:
                 return new LoginFragment();
@@ -27,6 +27,6 @@ public class AuthenticationPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2; // Chúng ta có 2 tab (Login và Sign up)
+        return 2; //  có 2 tab (Login và Sign up)
     }
 }

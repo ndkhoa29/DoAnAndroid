@@ -12,14 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Header -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#007AFF"
             android:padding="8dp">
 
-            <!-- Back Button -->
             <ImageView
                 android:id="@+id/btnBack"
                 android:layout_width="40dp"
@@ -29,7 +27,6 @@
                 android:layout_centerVertical="true"
                 app:tint="#FFFFFF" />
 
-            <!-- Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +37,6 @@
                 android:layout_centerInParent="true" />
         </RelativeLayout>
 
-        <!-- Subtitle -->
         <TextView
             android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
@@ -48,7 +44,6 @@
             android:text="Chọn ngày và giờ"
             android:textSize="16sp" />
 
-        <!-- Calendar Card -->
         <androidx.cardview.widget.CardView
             android:layout_marginTop="12dp"
             android:layout_width="match_parent"
@@ -62,7 +57,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Month + Buttons -->
                 <LinearLayout
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
@@ -101,7 +95,6 @@
                         android:src="@drawable/ic_chevron_right" />
                 </LinearLayout>
 
-                <!-- Calendar View -->
                 <CalendarView
                     android:id="@+id/calendarView"
                     android:layout_width="match_parent"
@@ -112,7 +105,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Time Label -->
         <TextView
             android:id="@+id/tvTimeLabel"
             android:layout_marginTop="25dp"
@@ -122,14 +114,12 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <!-- TIME BUTTONS – FIXED VERSION -->
         <LinearLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Row 1 -->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -157,7 +147,6 @@
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
-            <!-- Row 2 -->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

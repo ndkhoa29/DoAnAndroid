@@ -16,7 +16,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header: ID và Date -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +41,6 @@
                 android:textSize="14sp"/>
         </RelativeLayout>
 
-        <!-- Content: Image + Info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,7 +127,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Rate Service Button -->
         <TextView
             android:id="@+id/btnRateService"
             android:layout_width="wrap_content"

@@ -69,9 +69,7 @@ public class TabServiceActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Hàm hiển thị PopupMenu khi nhấn vào nút Filter
-     */
+
     private void showFilterMenu(View anchorView) {
         PopupMenu popupMenu = new PopupMenu(this, anchorView);
         popupMenu.getMenuInflater().inflate(R.menu.filter_popup_menu, popupMenu.getMenu());
