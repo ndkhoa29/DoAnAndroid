@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Category"
+            android:text="Danh mục"
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="center"/>
@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cleaning"
+            android:text="Dọn dẹp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp"/>
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Repairing"
+            android:text="Dọn dẹp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp"/>
@@ -130,7 +130,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Laundry"
+            android:text="Dọn dẹp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp"/>
@@ -157,7 +157,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Painting"
+            android:text="Dọn dẹp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp"/>
@@ -184,7 +184,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Electric"
+        android:text="Dọn dẹp"
         android:textSize="14sp"
         android:textColor="@android:color/black"
         android:layout_marginTop="8dp"/>
@@ -211,7 +211,7 @@ android:focusable="true">
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Air"
+    android:text="Dọn dẹp"
     android:textSize="14sp"
     android:textColor="@android:color/black"
     android:layout_marginTop="8dp"/>
@@ -238,7 +238,7 @@ android:focusable="true">
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Wifi"
+    android:text="Dọn dẹp"
     android:textSize="14sp"
     android:textColor="@android:color/black"
     android:layout_marginTop="8dp"/>
@@ -265,7 +265,7 @@ android:focusable="true">
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Wifi"
+    android:text="Dọn dẹp"
     android:textSize="14sp"
     android:textColor="@android:color/black"
     android:layout_marginTop="8dp"/>
@@ -292,7 +292,7 @@ android:focusable="true">
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Plumber"
+    android:text="Dọn dẹp"
     android:textSize="14sp"
     android:textColor="@android:color/black"
     android:layout_marginTop="8dp"/>
@@ -319,7 +319,7 @@ android:focusable="true">
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Kitchen"
+    android:text="Dọn dẹp"
     android:textSize="14sp"
     android:textColor="@android:color/black"
     android:layout_marginTop="8dp"/>

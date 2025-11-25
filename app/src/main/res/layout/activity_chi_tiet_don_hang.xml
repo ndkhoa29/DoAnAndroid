@@ -55,7 +55,7 @@
                     android:id="@+id/tvOrderId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mã đơn hàng:  #526565.  BG16090"
+                    android:text="Mã đơn hàng:  #526565"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Thời gian đặt: 45 phút - 08 Tháng 3 2024"
+                    android:text="Thời gian đặt: 08 Tháng 3 2025"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 

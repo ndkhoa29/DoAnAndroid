@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="#F5F5F5">
 
-    <!-- Toolbar kiểu Chi tiết dịch vụ -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -15,7 +14,6 @@
         android:elevation="4dp"
         android:padding="8dp">
 
-        <!-- Nút Back -->
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="40dp"

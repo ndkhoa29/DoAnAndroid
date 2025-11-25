@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/CustomTextInputLayout"
-        android:hint="Fist name">
+        android:hint="Họ tên">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         style="@style/CustomTextInputLayout"
-        android:hint="Email address">
+        android:hint="Email ">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         style="@style/CustomTextInputLayout"
-        android:hint="Phone number">
+        android:hint="Số điện thoại">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
         android:layout_marginTop="16dp"
         app:passwordToggleEnabled="true"
         style="@style/CustomTextInputLayout"
-        android:hint="">
+        android:hint="Mật khẩu">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
         android:layout_height="86dp"
         android:layout_marginTop="24dp"
         android:id="@+id/btnSignUp"
-        android:text="Sign up"
+        android:text="Đăng nhập"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
