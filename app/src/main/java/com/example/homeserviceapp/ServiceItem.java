@@ -1,13 +1,11 @@
 package com.example.homeserviceapp;
 
 public class ServiceItem {
-
     private String title;
     private int price;
     private float rating;
     private int reviewCount;
     private int imageResource;
-
     // BỔ SUNG: Thuộc tính để lọc theo danh mục (Category)
     private String categoryType;
 
@@ -30,13 +28,11 @@ public class ServiceItem {
     }
 
     // --- Getters ---
-
     public String getTitle() { return title; }
     public int getPrice() { return price; }
     public float getRating() { return rating; }
     public int getReviewCount() { return reviewCount; }
     public int getImageResource() { return imageResource; }
-
     // BỔ SUNG: Getter cho Category Type
     public String getCategoryType() { return categoryType; }
 }

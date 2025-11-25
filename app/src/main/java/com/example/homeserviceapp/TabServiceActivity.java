@@ -3,6 +3,7 @@ package com.example.homeserviceapp;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -23,10 +24,8 @@ public class TabServiceActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TextView tvHeaderTitle;
 
-    // Sửa lỗi: Khai báo mảng tabTitles ở cấp độ lớp
     private final String[] tabTitles = {"Tất cả", "Dọn vệ sinh", "Sửa chữa", "Giặt ủi", "Sơn sửa", "Đồ điên tử", "điều hòa "};
 
-    // Khai báo: Launcher để mở FilterActivity
     private ActivityResultLauncher<Intent> filterActivityResultLauncher;
 
     @Override
@@ -41,29 +40,24 @@ public class TabServiceActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
 
-        // 1. Đăng ký Launcher trước khi sử dụng
         registerFilterResultLauncher();
 
         ImageButton btnFilter = findViewById(R.id.btn_filter);
 
-        // 2. GẮN CHỨC NĂNG: Mở FilterActivity
         btnFilter.setOnClickListener(v -> {
             Intent intent = new Intent(TabServiceActivity.this, FilterActivity.class);
             filterActivityResultLauncher.launch(intent);
         });
 
-        // 3. Thiết lập Adapter cho ViewPager2
         TabAdapter adapter = new TabAdapter(this, tabTitles);
         viewPager.setAdapter(adapter);
 
-        // 4. Liên kết TabLayout với ViewPager2
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
                     tab.setText(tabTitles[position]);
                 }
         ).attach();
 
-        // 5. Cập nhật tiêu đề dựa trên Tab đang chọn
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -75,15 +69,12 @@ public class TabServiceActivity extends AppCompatActivity {
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        // 6. Cài đặt tiêu đề ban đầu là "Tất cả"
         if (tabTitles.length > 0) {
             tvHeaderTitle.setText(tabTitles[0]);
         }
     }
 
-    /**
-     * Đăng ký ActivityResultLauncher để nhận kết quả từ FilterActivity và áp dụng lên Fragment hiện tại.
-     */
+    
     private void registerFilterResultLauncher() {
         filterActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -96,16 +87,13 @@ public class TabServiceActivity extends AppCompatActivity {
                             // Nhận chuỗi danh mục đã chọn từ FilterActivity
                             String categories = data.getStringExtra("SELECTED_CATEGORIES");
 
-                            // 1. Lấy Fragment hiện tại
                             // Tag được tạo tự động cho Fragment trong ViewPager2 là "f" + position
                             Fragment currentFragment = getSupportFragmentManager()
                                     .findFragmentByTag("f" + viewPager.getCurrentItem());
 
-                            // 2. Áp dụng bộ lọc nếu Fragment là ServiceListFragment
                             if (currentFragment instanceof ServiceListFragment) {
                                 ServiceListFragment serviceFragment = (ServiceListFragment) currentFragment;
 
-                                // Gọi hàm lọc đã được định nghĩa trong ServiceListFragment
                                 serviceFragment.applyFilter(minPrice, maxPrice, categories);
 
                                 Toast.makeText(this,
@@ -116,5 +104,41 @@ public class TabServiceActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    /**
+     * Hiển thị menu popup để sắp xếp (từ main branch - giữ lại nếu cần)
+     */
+    private void showFilterMenu(View anchorView) {
+        PopupMenu popupMenu = new PopupMenu(this, anchorView);
+        popupMenu.getMenuInflater().inflate(R.menu.filter_popup_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            Fragment currentFragment = getSupportFragmentManager()
+                    .findFragmentByTag("f" + viewPager.getCurrentItem());
+
+            if (currentFragment instanceof ServiceListFragment) {
+                ServiceListFragment serviceFragment = (ServiceListFragment) currentFragment;
+
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.filter_price_low_high) {
+                    serviceFragment.sortData("PRICE_ASC");
+                    return true;
+                } else if (itemId == R.id.filter_price_high_low) {
+                    serviceFragment.sortData("PRICE_DESC");
+                    return true;
+                } else if (itemId == R.id.filter_rating_high) {
+                    serviceFragment.sortData("RATING_DESC");
+                    return true;
+                } else if (itemId == R.id.filter_most_reviews) {
+                    serviceFragment.sortData("REVIEWS_DESC");
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        popupMenu.show();
     }
 }

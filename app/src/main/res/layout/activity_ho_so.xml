@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Thanh đầu trang -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/white">
+
+            <!-- Nút quay lại -->
+            <ImageButton
+                android:id="@+id/nutQuayLai"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back_arrow"
+                android:contentDescription="Quay lại" />
+
+            <!-- Tiêu đề màn hình -->
+            <TextView
+                android:id="@+id/tieuDeManHinh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Hồ sơ của tôi"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Nút chỉnh sửa ở trên bên phải -->
+            <ImageButton
+                android:id="@+id/nutChinhSua"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Chỉnh sửa" />
+        </RelativeLayout>
+
+        <!-- Ảnh đại diện / Avatar -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp">
+
+            <!-- Ảnh đại diện hình tròn -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/anhDaiDien"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_provider_avatar"
+                app:civ_border_color="#E0E0E0"
+                app:civ_border_width="2dp" />
+        </RelativeLayout>
+
+        <!-- Trường Họ và Tên -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <!-- Nhãn Họ và Tên -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Họ và tên"
+                android:textColor="@color/gray"
+                android:textSize="12sp" />
+
+            <!-- Input Họ và Tên -->
+            <EditText
+                android:id="@+id/nhapHoVaTen"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Nhập họ và tên"
+                android:text="abc"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <!-- Trường Email -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <!-- Nhãn Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Địa chỉ email"
+                android:textColor="@color/gray"
+                android:textSize="12sp" />
+
+            <!-- Input Email -->
+            <EditText
+                android:id="@+id/nhapEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Nhập địa chỉ email"
+                android:text="abc2@gmail.com"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:inputType="textEmailAddress" />
+        </LinearLayout>
+
+        <!-- Trường Số điện thoại -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="32dp"
+            android:orientation="vertical">
+
+            <!-- Nhãn Số điện thoại -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Số điện thoại"
+                android:textColor="@color/gray"
+                android:textSize="12sp" />
+
+            <!-- Input Số điện thoại -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edittext_background"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/nhapSoDienThoai"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Nhập số điện thoại"
+                    android:text="09956358965"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:inputType="phone" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</ScrollView>

@@ -24,7 +24,6 @@ public class ServiceListFragment extends Fragment {
     private String categoryName;
 
     public ServiceListFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -114,17 +113,14 @@ public class ServiceListFragment extends Fragment {
             return;
         }
 
-        // Tách chuỗi danh mục đã chọn thành một mảng (ví dụ: ["Dọn dẹp", "Giặt là"])
         String[] selectedCats = selectedCategories.isEmpty() ? new String[0] : selectedCategories.split(", ");
 
         List<ServiceItem> filteredList = new ArrayList<>();
 
-        // 1. Lọc dữ liệu từ danh sách GỐC
         for (ServiceItem item : originalServiceList) {
             boolean matchesPrice = item.getPrice() >= minPrice && item.getPrice() <= maxPrice;
             boolean matchesCategory = false;
 
-            // Logic lọc danh mục
             if ("Tất cả".equals(categoryName) && selectedCats.length > 0) {
                 // Nếu đang ở tab "Tất cả" VÀ có Chip được chọn
                 for (String cat : selectedCats) {
@@ -143,11 +139,9 @@ public class ServiceListFragment extends Fragment {
             }
         }
 
-        // 2. Cập nhật serviceList và Adapter
         serviceList.clear();
         serviceList.addAll(filteredList);
 
-        // 3. (Tùy chọn) Sắp xếp lại danh sách sau khi lọc
         sortData("RATING_DESC");
 
         serviceAdapter.notifyDataSetChanged();
@@ -157,9 +151,7 @@ public class ServiceListFragment extends Fragment {
                 Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Phương thức public để Activity gọi và sắp xếp dữ liệu (Giữ nguyên)
-     */
+    
     public void sortData(String sortType) {
         if (serviceList == null || serviceAdapter == null) {
             return;
