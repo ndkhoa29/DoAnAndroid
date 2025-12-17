@@ -29,9 +29,11 @@ public class LoginActivity extends AppCompatActivity {
 
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
-                    if (position == 0) tab.setText("Đăng ký");
-                    else tab.setText("Đăng nhập");
+                    if (position == 0) tab.setText("Đăng nhập");
+                    else tab.setText("Đăng ký");
                 }
         ).attach();
     }
+
+
 }

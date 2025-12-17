@@ -41,7 +41,7 @@
                 android:id="@+id/tvTabUpcoming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đang chờ"
+                android:text="Chờ xác nhận"
                 android:textColor="#2196F3"
                 android:textSize="15sp"
                 android:textStyle="bold"/>
@@ -71,7 +71,7 @@
                 android:id="@+id/tvTabCompleted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hoàn thành"
+                android:text="Đang thực hiện"
                 android:textColor="#999999"
                 android:textSize="15sp"/>
 
@@ -100,7 +100,7 @@
                 android:id="@+id/tvTabCancelled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đã huỷ"
+                android:text="Hoàn thành"
                 android:textColor="#999999"
                 android:textSize="15sp"/>
 

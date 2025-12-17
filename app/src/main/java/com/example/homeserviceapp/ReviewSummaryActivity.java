@@ -45,7 +45,7 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                navigateToCalendar();
+//                navigateToCalendar();
             }
         });
 
@@ -71,12 +71,10 @@ public class ReviewSummaryActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToCalendar();
-            }
+        btnBack.setOnClickListener(v -> {
+            finish();
         });
+
 
         // Click vào payment để mở màn hình chọn phương thức thanh toán
         cardPaymentMethod.setOnClickListener(new View.OnClickListener() {
@@ -116,12 +114,12 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         rbGooglePay.setChecked(true);
     }
 
-    private void navigateToCalendar() {
-        Intent intent = new Intent(ReviewSummaryActivity.this, CalendarActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
-    }
+//    private void navigateToCalendar() {
+//        Intent intent = new Intent(ReviewSummaryActivity.this, CalendarActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        startActivity(intent);
+//        finish();
+//    }
 
     private void openPaymentMethodScreen() {
         Intent intent = new Intent(ReviewSummaryActivity.this, PaymentMethodActivity.class);
@@ -176,6 +174,8 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             }
         }, 1500); // 1.5 seconds delay
     }
+
+
 
     private void showBookingCompletedDialog() {
         BookingCompletedDialog.show(this, new BookingCompletedDialog.OnDialogActionListener() {

@@ -174,6 +174,36 @@
             </LinearLayout>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvAddressLabel"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <EditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập địa chỉ của bạn"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:background="@android:color/transparent"
+                android:inputType="textPostalAddress"
+                android:maxLines="3"
+                android:gravity="top" />
+        </androidx.cardview.widget.CardView>
+
+
 
         <Button
             android:id="@+id/btnContinue"

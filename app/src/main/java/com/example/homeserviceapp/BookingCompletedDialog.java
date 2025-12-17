@@ -47,7 +47,7 @@ public class BookingCompletedDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_booking_completed);
+        setContentView(R.layout.dialog_payment_completed);
 
         if (getWindow() != null) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

@@ -2,6 +2,7 @@ package com.example.homeserviceapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,6 +55,12 @@ public class CalendarActivity extends AppCompatActivity {
 
         updateMonthLabel();
 
+        // Set màu chữ mặc định cho tất cả các nút giờ
+        setDefaultButtonStyle(btnTime1);
+        setDefaultButtonStyle(btnTime2);
+        setDefaultButtonStyle(btnTime3);
+        setDefaultButtonStyle(btnTime4);
+
         // Bấm Prev / Next đổi tháng
         btnPrevMonth.setOnClickListener(v -> {
             calendar.add(Calendar.MONTH, -1);
@@ -74,17 +82,21 @@ public class CalendarActivity extends AppCompatActivity {
             updateMonthLabel();
         });
 
-
-
         btnBack.setOnClickListener(v -> finish());
 
-
+        // Logic chọn giờ
         View.OnClickListener timeClickListener = v -> {
             Button clicked = (Button) v;
+
+            // Reset nút cũ về trạng thái mặc định
             if (selectedTimeButton != null) {
-                selectedTimeButton.setBackgroundResource(R.drawable.time_button_bg_default);
+                setDefaultButtonStyle(selectedTimeButton);
             }
-            clicked.setBackgroundResource(R.drawable.time_button_bg_selected);
+
+            // Đổi nút mới sang trạng thái được chọn
+            setSelectedButtonStyle(clicked);
+
+            // Lưu nút được chọn
             selectedTimeButton = clicked;
         };
 
@@ -94,7 +106,7 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime4.setOnClickListener(timeClickListener);
 
         btnContinue.setOnClickListener(v -> {
-            Intent intent = new Intent(CalendarActivity.this, ReviewSummaryActivity.class);
+            Intent intent = new Intent(CalendarActivity.this, ChiTietDonDatActivity.class);
             startActivity(intent);
         });
 
@@ -121,6 +133,18 @@ public class CalendarActivity extends AppCompatActivity {
 
             datePickerDialog.show();
         });
+    }
+
+    // Hàm set style mặc định (xám trắng, chữ đen)
+    private void setDefaultButtonStyle(Button button) {
+        button.setBackgroundResource(R.drawable.time_button_bg_default);
+        button.setTextColor(Color.parseColor("#424242"));
+    }
+
+    // Hàm set style được chọn (xanh, chữ trắng)
+    private void setSelectedButtonStyle(Button button) {
+        button.setBackgroundResource(R.drawable.time_button_bg_selected);
+        button.setTextColor(Color.WHITE);
     }
 
     private void updateMonthLabel() {

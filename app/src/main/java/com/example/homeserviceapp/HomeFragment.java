@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment {
         icFilter = view.findViewById(R.id.icFilter);
 
         icFilter.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), TabServiceActivity.class);
+            Intent intent = new Intent(requireContext(), FilterActivity.class);
             startActivity(intent);
         });
 

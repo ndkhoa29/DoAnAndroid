@@ -50,6 +50,17 @@ public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.View
             intent.putExtra("STATUS", "completed");
             v.getContext().startActivity(intent);
         });
+
+        holder.btnThanhToan.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), ReviewSummaryActivity.class);
+
+            intent.putExtra("BOOKING_ID", booking.getBookingId());
+            intent.putExtra("SERVICE_NAME", booking.getServiceName());
+            intent.putExtra("PRICE", booking.getPrice());
+
+            v.getContext().startActivity(intent);
+        });
+
     }
 
     @Override
@@ -59,7 +70,8 @@ public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvBookingId, tvBookingDate, tvServiceName;
-        TextView tvLocation, tvTime, tvPrice, btnRateService;
+        TextView tvLocation, tvTime, tvPrice;
+        TextView btnThanhToan;
         ImageView ivServiceImage;
 
         ViewHolder(@NonNull View itemView) {
@@ -71,7 +83,9 @@ public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.View
             tvTime = itemView.findViewById(R.id.tvTime);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivServiceImage = itemView.findViewById(R.id.ivServiceImage);
-            btnRateService = itemView.findViewById(R.id.btnRateService);
+            btnThanhToan = itemView.findViewById(R.id.btnThanhToan);
         }
+
     }
+
 }

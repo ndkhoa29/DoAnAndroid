@@ -24,10 +24,10 @@ public class ChiTietDonHangActivity extends AppCompatActivity {
         });
 
 
-        providerContainer.setOnClickListener(v -> {
-            Intent intent = new Intent(ChiTietDonHangActivity.this, HoSoActivity.class);
-            startActivity(intent);
-        });
+//        providerContainer.setOnClickListener(v -> {
+//            Intent intent = new Intent(ChiTietDonHangActivity.this, HoSoActivity.class);
+//            startActivity(intent);
+//        });
 
 
     }
