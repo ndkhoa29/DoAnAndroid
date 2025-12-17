@@ -24,6 +24,14 @@ public class ManHinhGioiThieuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Check if user is already logged in
+        if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_man_hinh_gioi_thieu);
 
         Button btnGetStarted = findViewById(R.id.btnGetStarted);

@@ -79,12 +79,28 @@ public class ProfileFragment extends Fragment {
     }
 
     private void performLogout() {
+        com.google.firebase.auth.FirebaseAuth auth = com.google.firebase.auth.FirebaseAuth.getInstance();
+        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
 
+        if (auth.getCurrentUser() != null) {
+            String userId = auth.getCurrentUser().getUid();
+            db.collection("users").document(userId)
+                    .update("isOnline", false)
+                    .addOnCompleteListener(task -> {
+                        // Sign out regardless of update success
+                        auth.signOut();
+                        navigateToLogin();
+                    });
+        } else {
+            navigateToLogin();
+        }
+    }
+
+    private void navigateToLogin() {
         Toast.makeText(getContext(), "Bạn đã đăng xuất", Toast.LENGTH_SHORT).show();
-
-        // Intent intent = new Intent(getActivity(), LoginActivity.class);
-        // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        // startActivity(intent);
-        // getActivity().finish();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        getActivity().finish();
     }
 }
