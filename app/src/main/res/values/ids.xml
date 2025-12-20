@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="range_slider_price" type="id" />
+    <item name="tv_min_price" type="id" />
+    <item name="tv_max_price" type="id" />
+    <item name="btn_reset" type="id" />
+    <item name="btn_apply" type="id" />
+    <item name="chip_group_category" type="id" />
+    <item name="chip_cleaning" type="id" />
+</resources>
