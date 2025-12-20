@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide; // Import thư viện Glide
 import java.util.List;
 import java.util.Locale;
 
@@ -36,23 +37,36 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         ServiceItem currentItem = serviceList.get(position);
 
         holder.tvTitle.setText(currentItem.getTitle());
+
+        // Hiển thị giá (Giả định giá lưu trên Firestore là kiểu int)
         String priceString = "$" + currentItem.getPrice() + "/h";
         holder.tvPrice.setText(priceString);
-        holder.tvRating.setText(String.format(Locale.US, "%.1f", currentItem.getRating()));
-        holder.imgService.setImageResource(currentItem.getImageResource());
 
+        // Định dạng rating 1 chữ số thập phân
+        holder.tvRating.setText(String.format(Locale.US, "%.1f", currentItem.getRating()));
+
+        // --- SỬ DỤNG GLIDE ĐỂ LOAD ẢNH TỪ FIREBASE URL ---
+        Glide.with(context)
+                .load(currentItem.getImageUrl()) // Lấy link từ Firestore
+                .placeholder(R.drawable.placeholder_image) // Ảnh hiển thị khi đang tải
+                .error(R.drawable.error_image) // Ảnh hiển thị nếu link bị hỏng
+                .centerCrop()
+                .into(holder.imgService);
+
+        // Sự kiện Click vào item
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(context, "Clicked: " + currentItem.getTitle(), Toast.LENGTH_SHORT).show();
         });
 
+        // Sự kiện Click vào trái tim (Yêu thích)
         holder.iconHeart.setOnClickListener(v -> {
-            Toast.makeText(context, "Toggled Favorite", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Đã thêm vào yêu thích: " + currentItem.getTitle(), Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
     public int getItemCount() {
-        return serviceList.size();
+        return serviceList != null ? serviceList.size() : 0;
     }
 
     public static class ServiceViewHolder extends RecyclerView.ViewHolder {

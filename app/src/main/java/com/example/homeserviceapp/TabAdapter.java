@@ -1,35 +1,32 @@
 package com.example.homeserviceapp;
 
+import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import android.os.Bundle;
+import java.util.List;
 
 public class TabAdapter extends FragmentStateAdapter {
+    private List<String> categoryNames;
 
-    private String[] tabTitles;
-
-    public TabAdapter(@NonNull FragmentActivity fragmentActivity, String[] titles) {
+    public TabAdapter(@NonNull FragmentActivity fragmentActivity, List<String> titles) {
         super(fragmentActivity);
-        this.tabTitles = titles;
+        this.categoryNames = titles;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Tạo Fragment mới cho mỗi tab
         ServiceListFragment fragment = new ServiceListFragment();
-
-        // Truyền tên danh mục vào Fragment để nó có thể tải dữ liệu tương ứng
         Bundle args = new Bundle();
-        args.putString("CATEGORY_NAME", tabTitles[position]);
+        args.putString("CATEGORY_NAME", categoryNames.get(position));
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public int getItemCount() {
-        return tabTitles.length;
+        return categoryNames.size();
     }
 }

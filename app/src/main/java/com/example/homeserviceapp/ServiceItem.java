@@ -6,37 +6,45 @@ public class ServiceItem {
     private int price;
     private float rating;
     private int reviewCount;
-    private int imageResource;
 
-    // BỔ SUNG: Thuộc tính để lọc theo danh mục (Category)
+    // THAY ĐỔI: Chuyển từ int (Resource ID) sang String (URL ảnh trên mạng)
+    private String imageUrl;
+
     private String categoryType;
 
     /**
-     * Constructor mới bao gồm categoryType.
-     * @param title Tên dịch vụ
-     * @param price Giá (int)
-     * @param rating Đánh giá
-     * @param reviewCount Số lượng đánh giá
-     * @param imageResource ID tài nguyên hình ảnh
-     * @param categoryType Loại danh mục (ví dụ: "Dọn dẹp", "Sửa chữa")
+     * BẮT BUỘC: Constructor trống (no-argument constructor).
+     * Firebase Firestore cần cái này để có thể dùng hàm .toObject(ServiceItem.class)
      */
-    public ServiceItem(String title, int price, float rating, int reviewCount, int imageResource, String categoryType) {
+    public ServiceItem() {
+    }
+
+    /**
+     * Constructor đầy đủ để bạn vẫn có thể tạo object thủ công nếu muốn.
+     */
+    public ServiceItem(String title, int price, float rating, int reviewCount, String imageUrl, String categoryType) {
         this.title = title;
         this.price = price;
         this.rating = rating;
         this.reviewCount = reviewCount;
-        this.imageResource = imageResource;
-        this.categoryType = categoryType; // Khởi tạo thuộc tính mới
+        this.imageUrl = imageUrl;
+        this.categoryType = categoryType;
     }
 
     // --- Getters ---
-
     public String getTitle() { return title; }
     public int getPrice() { return price; }
     public float getRating() { return rating; }
     public int getReviewCount() { return reviewCount; }
-    public int getImageResource() { return imageResource; }
-
-    // BỔ SUNG: Getter cho Category Type
+    public String getImageUrl() { return imageUrl; }
     public String getCategoryType() { return categoryType; }
+
+    // --- Setters (QUAN TRỌNG) ---
+    // Firestore cần các hàm Setters để đổ dữ liệu từ database vào các biến
+    public void setTitle(String title) { this.title = title; }
+    public void setPrice(int price) { this.price = price; }
+    public void setRating(float rating) { this.rating = rating; }
+    public void setReviewCount(int reviewCount) { this.reviewCount = reviewCount; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setCategoryType(String categoryType) { this.categoryType = categoryType; }
 }
