@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         navMessage.setOnClickListener(v -> {
-            startActivity(new Intent(this, MessageActivity.class));
+            startActivity(new Intent(this, ChatActivity.class));
         });
 
         navBooking.setOnClickListener(v -> {
@@ -59,6 +59,21 @@ public class MainActivity extends AppCompatActivity {
             setActiveTab(3);
         });
 
+        requestNotificationPermission();
+    }
+    
+    private void requestNotificationPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(
+                    this, android.Manifest.permission.POST_NOTIFICATIONS) != 
+                    android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(
+                    this, 
+                    new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 
+                    1001
+                );
+            }
+        }
     }
 
     private void loadFragment(Fragment fragment) {
@@ -67,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    // Method public để các Fragment có thể gọi
     public void navigateToBooking() {
         loadFragment(new BookingFragment());
         setActiveTab(2);

@@ -26,14 +26,26 @@ public class CalendarActivity extends AppCompatActivity {
     private ImageView btnBack;
     private ImageButton btnCalendarIcon, btnPrevMonth, btnNextMonth;
     private Button btnTime1, btnTime2, btnTime3, btnTime4, btnContinue;
-    private Button selectedTimeButton = null; // lưu button giờ đang chọn
+    private Button selectedTimeButton = null;
     private Calendar calendar;
     private SimpleDateFormat monthFormat;
+
+    private String serviceName;
+    private String serviceId;
+    private String servicePrice;
+    private String serviceImage; // New Image URL field
+    private String selectedTime = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        
+        // Receive data from ServiceDetailActivity
+        serviceName = getIntent().getStringExtra("service_name");
+        serviceId = getIntent().getStringExtra("service_id");
+        servicePrice = getIntent().getStringExtra("service_price");
+        serviceImage = getIntent().getStringExtra("service_image"); // Get Image URL
 
         calendarView = findViewById(R.id.calendarView);
         tvMonth = findViewById(R.id.tvMonth);
@@ -49,6 +61,8 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime4 = findViewById(R.id.btnTime4);
 
         btnContinue = findViewById(R.id.btnContinue);
+        
+        android.widget.EditText etAddress = findViewById(R.id.etAddress);
 
         calendar = Calendar.getInstance();
         monthFormat = new SimpleDateFormat("MMMM yyyy", new Locale("vi")); // Việt Nam
@@ -98,6 +112,7 @@ public class CalendarActivity extends AppCompatActivity {
 
             // Lưu nút được chọn
             selectedTimeButton = clicked;
+            selectedTime = clicked.getText().toString();
         };
 
         btnTime1.setOnClickListener(timeClickListener);
@@ -106,7 +121,28 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime4.setOnClickListener(timeClickListener);
 
         btnContinue.setOnClickListener(v -> {
+            String address = etAddress.getText().toString().trim();
+            
+            if (selectedTime == null) {
+                Toast.makeText(this, "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (address.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String selectedDate = dateFormat.format(calendar.getTime());
+
             Intent intent = new Intent(CalendarActivity.this, ChiTietDonDatActivity.class);
+            intent.putExtra("SERVICE_NAME", serviceName);
+            intent.putExtra("SERVICE_ID", serviceId);
+            intent.putExtra("SERVICE_PRICE", servicePrice);
+            intent.putExtra("SERVICE_IMAGE", serviceImage); // Pass Image URL
+            intent.putExtra("BOOKING_DATE", selectedDate);
+            intent.putExtra("BOOKING_TIME", selectedTime);
+            intent.putExtra("BOOKING_ADDRESS", address);
             startActivity(intent);
         });
 
