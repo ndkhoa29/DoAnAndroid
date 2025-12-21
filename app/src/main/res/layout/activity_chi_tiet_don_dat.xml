@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Thời gian đặt: 08 Tháng 3 2025"
+                    android:text="Thời gian đặt: 08:30 18/03/2025"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
@@ -77,15 +77,37 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Địa chỉ:  "
+                        android:text="Khách hàng: "
                         android:textColor="@color/gray"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/tvStatus"
+                        android:id="@+id/tvCustomerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đà Nẵng"
+                        android:text="Nguyễn Văn A"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SĐT: "
+                        android:textColor="@color/gray"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvCustomerPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0905123456"
                         android:textColor="@color/gray"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -139,18 +161,10 @@
                         android:id="@+id/tvProviderName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jenny Wilson"
+                        android:text="Service Center AZ"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvProviderRole"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nhân viên dọn dẹp"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout

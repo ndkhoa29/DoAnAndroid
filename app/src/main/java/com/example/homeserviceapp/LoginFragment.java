@@ -22,7 +22,7 @@ public class LoginFragment extends Fragment {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
-    private TextView textForgotPassword, tvGuestMode;
+    private TextView textForgotPassword;
     private ProgressBar progressBar;
     
     private FirebaseAuth auth;
@@ -33,16 +33,13 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        // Initialize Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize views
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
         btnLogin = view.findViewById(R.id.btnLogin);
         textForgotPassword = view.findViewById(R.id.text_forgot_password);
-        tvGuestMode = view.findViewById(R.id.tvGuestMode);
         progressBar = view.findViewById(R.id.progressBar);
 
         btnLogin.setOnClickListener(v -> login());
@@ -52,11 +49,6 @@ public class LoginFragment extends Fragment {
             startActivity(intent);
         });
 
-        tvGuestMode.setOnClickListener(v -> {
-            // Guest mode - bypass authentication
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-        });
 
         return view;
     }
@@ -65,7 +57,6 @@ public class LoginFragment extends Fragment {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        // Validation
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Vui lòng nhập email");
             etEmail.requestFocus();
@@ -84,16 +75,13 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        // Show progress
         progressBar.setVisibility(View.VISIBLE);
         btnLogin.setEnabled(false);
 
-        // Sign in with Firebase Authentication
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String userId = authResult.getUser().getUid();
 
-                    // Update online status in Firestore
                     db.collection("users").document(userId)
                             .update(
                                     "isOnline", true,
@@ -103,19 +91,50 @@ public class LoginFragment extends Fragment {
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
-                                // Navigate to MainActivity
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                getActivity().finish();
+                                db.collection("users").document(userId).get()
+                                        .addOnSuccessListener(documentSnapshot -> {
+                                            String userType = documentSnapshot.getString("userType");
+                                            Intent intent;
+                                            if ("admin".equals(userType)) {
+                                                intent = new Intent(getActivity(), AdminMainActivity.class);
+                                            } else {
+                                                intent = new Intent(getActivity(), MainActivity.class);
+                                            }
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            getActivity().finish();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            getActivity().finish();
+                                        });
                             })
                             .addOnFailureListener(e -> {
-                                // Even if update fails, still navigate
-                                progressBar.setVisibility(View.GONE);
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                getActivity().finish();
+                                
+                                db.collection("users").document(userId).get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        progressBar.setVisibility(View.GONE);
+                                        String userType = documentSnapshot.getString("userType");
+                                        Intent intent;
+                                        if ("admin".equals(userType)) {
+                                            intent = new Intent(getActivity(), AdminMainActivity.class);
+                                        } else {
+                                            intent = new Intent(getActivity(), MainActivity.class);
+                                        }
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    })
+                                    .addOnFailureListener(e2 -> {
+                                        progressBar.setVisibility(View.GONE);
+
+                                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    });
                             });
                 })
                 .addOnFailureListener(e -> {

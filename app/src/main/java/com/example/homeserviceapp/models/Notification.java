@@ -15,13 +15,14 @@ public class Notification {
 
     public Notification() {}
 
-    public Notification(String userId, String type, String title, String message, String relatedId) {
+    public Notification(String userId, String title, String message, String type, String relatedId) {
         this.userId = userId;
-        this.type = type;
         this.title = title;
         this.message = message;
+        this.type = type;
         this.relatedId = relatedId;
         this.isRead = false;
+        this.createdAt = com.google.firebase.Timestamp.now();
     }
 
     // Getters and Setters
