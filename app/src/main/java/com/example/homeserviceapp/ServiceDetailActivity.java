@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -33,11 +35,26 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private String serviceId;
     private ServiceItem currentService;
 
+    private String serviceId;
+    private String serviceName;
+    private String servicePrice;
+    private String providerName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_detail);
 
+        serviceId = getIntent().getStringExtra("serviceId");
+        serviceName = getIntent().getStringExtra("serviceName");
+        servicePrice = getIntent().getStringExtra("servicePrice");
+        providerName = getIntent().getStringExtra("providerName");
+
+        if (serviceId == null || serviceId.isEmpty()) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy dịch vụ", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         db = FirebaseFirestore.getInstance();
         serviceId = getIntent().getStringExtra("SERVICE_ID");
 
@@ -62,6 +79,9 @@ public class ServiceDetailActivity extends AppCompatActivity {
         btnCall = findViewById(R.id.btnCall);
         btnBookNow = findViewById(R.id.btnBookNow);
         btnBack = findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(v -> finish());
+
         imgService = findViewById(R.id.imgService);
         tvTitle = findViewById(R.id.tvTitle);
         tvPrice = findViewById(R.id.tvPrice);
@@ -98,6 +118,22 @@ public class ServiceDetailActivity extends AppCompatActivity {
         btnBookNow.setOnClickListener(v -> {
             try {
                 Log.d("ServiceDetail", "Bắt đầu chuyển sang CalendarActivity");
+
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    Toast.makeText(ServiceDetailActivity.this,
+                            "Vui lòng đăng nhập để đặt dịch vụ",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
+
+                intent.putExtra("serviceId", serviceId);
+                intent.putExtra("service_name", serviceName != null ? serviceName : "Dịch vụ");
+                intent.putExtra("service_price", servicePrice != null ? servicePrice : "0");
+                intent.putExtra("provider_name", providerName != null ? providerName : "");
+
                 Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
                 if (currentService != null) {
                     intent.putExtra("service_id", serviceId);
@@ -112,7 +148,9 @@ public class ServiceDetailActivity extends AppCompatActivity {
                 Log.d("ServiceDetail", "Đã gọi startActivity");
             } catch (Exception e) {
                 Log.e("ServiceDetail", "Lỗi: " + e.getMessage());
-                Toast.makeText(ServiceDetailActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ServiceDetailActivity.this,
+                        "Lỗi: " + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
