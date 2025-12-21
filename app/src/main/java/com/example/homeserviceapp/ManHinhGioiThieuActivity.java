@@ -26,9 +26,29 @@ public class ManHinhGioiThieuActivity extends AppCompatActivity {
 
         // Check if user is already logged in
         if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            // Check user role from Firestore
+            String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String userType = documentSnapshot.getString("userType");
+                    Intent intent;
+                    if ("admin".equals(userType)) {
+                        intent = new Intent(this, AdminMainActivity.class);
+                    } else {
+                        intent = new Intent(this, MainActivity.class);
+                    }
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    // Default to MainActivity on error
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
             return;
         }
 
