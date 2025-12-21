@@ -1,7 +1,10 @@
 package com.example.homeserviceapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,6 +16,13 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class PaymentMethodActivity extends AppCompatActivity {
 
     private ImageView btnBack;
@@ -22,12 +32,18 @@ public class PaymentMethodActivity extends AppCompatActivity {
     private TextView tvTotalAmount;
 
     private String selectedPaymentMethod = "VNPay";
-    private double totalAmount = 150.000;
+    private double totalAmount = 0;
+    private String bookingId;
+    
+    private FirebaseFirestore db;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_method);
+
+        db = FirebaseFirestore.getInstance();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -82,12 +98,15 @@ public class PaymentMethodActivity extends AppCompatActivity {
     private void loadData() {
         Intent intent = getIntent();
         if (intent != null) {
-            totalAmount = intent.getDoubleExtra("total_amount", 150.00);
+            totalAmount = intent.getDoubleExtra("total_amount", 0);
+            bookingId = intent.getStringExtra("booking_id");
             selectedPaymentMethod = intent.getStringExtra("payment_method");
             if (selectedPaymentMethod == null) selectedPaymentMethod = "VNPay";
         }
 
-        tvTotalAmount.setText(String.format("$%.2f", totalAmount));
+        // Format in VND
+        NumberFormat currencyFormat = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+        tvTotalAmount.setText(currencyFormat.format(totalAmount) + " đ");
         setDefaultPaymentMethod();
     }
 
@@ -119,41 +138,125 @@ public class PaymentMethodActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, "Đang xử lý thanh toán qua " + selectedPaymentMethod + "...", Toast.LENGTH_SHORT).show();
+        if (bookingId == null || bookingId.isEmpty()) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy mã đơn hàng", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        switch (selectedPaymentMethod) {
-            case "MoMo": processMoMoPayment(); break;
-            case "VNPay": processVNPayPayment(); break;
-            case "ZaloPay": processZaloPayPayment(); break;
-            case "Viettel Money": processViettelMoneyPayment(); break;
+        // Show processing dialog
+        showProcessingDialog();
+
+        // Simulate payment processing delay (2 seconds)
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            dismissProcessingDialog();
+            updateBookingStatus();
+        }, 2000);
+    }
+
+    private void showProcessingDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang xử lý thanh toán qua " + selectedPaymentMethod + "...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void dismissProcessingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 
-    private void processMoMoPayment() {
-        Toast.makeText(this, "Thanh toán MoMo: $" + totalAmount, Toast.LENGTH_LONG).show();
-        returnPaymentResult();
+    private void updateBookingStatus() {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("status", "Paid");
+        updates.put("paymentMethod", selectedPaymentMethod);
+
+        android.util.Log.d("PaymentMethod", "💳 Processing payment for booking: " + bookingId);
+
+        db.collection("bookings").document(bookingId).update(updates)
+            .addOnSuccessListener(aVoid -> {
+                Toast.makeText(this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
+                
+                android.util.Log.d("PaymentMethod", "✅ Payment successful, sending notification...");
+                // Send notification to admins
+                sendPaymentNotificationToAdmins(bookingId, selectedPaymentMethod);
+                
+                // Return success result
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("payment_method", selectedPaymentMethod);
+                resultIntent.putExtra("payment_success", true);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Lỗi thanh toán: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+    }
+    
+    private void sendPaymentNotificationToAdmins(String bookingId, String paymentMethod) {
+        String userId = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        if (userId == null) return;
+        
+        android.util.Log.d("PaymentMethod", "🔍 Fetching booking and user info...");
+        
+        // Get booking details
+        db.collection("bookings").document(bookingId).get()
+            .addOnSuccessListener(bookingDoc -> {
+                if (!bookingDoc.exists()) return;
+                
+                com.example.homeserviceapp.models.Booking booking = 
+                    bookingDoc.toObject(com.example.homeserviceapp.models.Booking.class);
+                if (booking == null) return;
+                
+                String bookingCode = booking.getCode() != null ? booking.getCode() : bookingId;
+                String serviceName = booking.getServiceName();
+                
+                // Get user's fullName
+                db.collection("users").document(userId).get()
+                    .addOnSuccessListener(userDoc -> {
+                        String userName = userDoc.getString("fullName");
+                        if (userName == null || userName.isEmpty()) {
+                            userName = "Khách hàng";
+                        }
+                        
+                        final String finalUserName = userName;
+                        android.util.Log.d("PaymentMethod", "👤 User: " + finalUserName);
+                        
+                        // Query all admins
+                        db.collection("users")
+                            .whereEqualTo("userType", "admin")
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                                    String adminId = doc.getId();
+                                    
+                                    String title = "Thanh toán từ " + finalUserName;
+                                    String message = "Đơn hàng " + bookingCode + " - " + serviceName + " đã được thanh toán qua " + paymentMethod;
+                                    
+                                    android.util.Log.d("PaymentMethod", "📤 Sending to admin: " + adminId);
+                                    
+                                    com.example.homeserviceapp.models.Notification notification = 
+                                        new com.example.homeserviceapp.models.Notification(
+                                            adminId,
+                                            title,
+                                            message,
+                                            "booking_paid",
+                                            bookingCode
+                                        );
+                                    
+                                    db.collection("notifications").add(notification)
+                                        .addOnSuccessListener(ref -> {
+                                            android.util.Log.d("PaymentMethod", "✅ Notification sent!");
+                                        });
+                                }
+                            });
+                    });
+            });
     }
 
-    private void processVNPayPayment() {
-        Toast.makeText(this, "Thanh toán VNPay: $" + totalAmount, Toast.LENGTH_LONG).show();
-        returnPaymentResult();
-    }
-
-    private void processZaloPayPayment() {
-        Toast.makeText(this, "Thanh toán ZaloPay: $" + totalAmount, Toast.LENGTH_LONG).show();
-        returnPaymentResult();
-    }
-
-    private void processViettelMoneyPayment() {
-        Toast.makeText(this, "Thanh toán Viettel Money: $" + totalAmount, Toast.LENGTH_LONG).show();
-        returnPaymentResult();
-    }
-
-    private void returnPaymentResult() {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("payment_method", selectedPaymentMethod);
-        resultIntent.putExtra("payment_success", true);
-        setResult(RESULT_OK, resultIntent);
-        finish();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissProcessingDialog();
     }
 }
