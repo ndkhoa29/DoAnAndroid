@@ -34,11 +34,9 @@ public class SignUpFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
 
-        // Initialize Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize views
         etFullName = view.findViewById(R.id.etFullName);
         etPhone = view.findViewById(R.id.etPhone);
         etEmail = view.findViewById(R.id.etEmail);
@@ -59,7 +57,8 @@ public class SignUpFragment extends Fragment {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Validation
+
+
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Vui lòng nhập họ tên");
             etFullName.requestFocus();
@@ -102,16 +101,13 @@ public class SignUpFragment extends Fragment {
             return;
         }
 
-        // Show progress
         progressBar.setVisibility(View.VISIBLE);
         btnSignUp.setEnabled(false);
 
-        // Create user with Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String userId = authResult.getUser().getUid();
 
-                    // Create user document in Firestore
                     Map<String, Object> user = new HashMap<>();
                     user.put("userId", userId);
                     user.put("email", email);
@@ -130,7 +126,6 @@ public class SignUpFragment extends Fragment {
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                 
-                                // Navigate to MainActivity
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -146,7 +141,6 @@ public class SignUpFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     btnSignUp.setEnabled(true);
                     
-                    // Handle specific errors
                     String errorMessage = "Đăng ký thất bại";
                     if (e.getMessage().contains("email address is already in use")) {
                         errorMessage = "Email đã được sử dụng";
