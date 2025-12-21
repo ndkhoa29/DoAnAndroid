@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.homeserviceapp.models.ServiceItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ public class ServiceListFragment extends Fragment {
     private RecyclerView recyclerView;
     private ServiceAdapter serviceAdapter;
     private List<ServiceItem> serviceList;
-    private List<ServiceItem> originalServiceList; // Danh sách dịch vụ gốc
+    private List<ServiceItem> originalServiceList;
     private String categoryName;
 
     public ServiceListFragment() {
@@ -50,64 +51,42 @@ public class ServiceListFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         serviceList = new ArrayList<>();
-        loadServiceData(categoryName); // Tải dữ liệu vào serviceList
 
-        // Lưu bản sao danh sách gốc ngay sau khi tải dữ liệu
+        loadServiceData(categoryName);
+        
         originalServiceList = new ArrayList<>(serviceList);
 
         serviceAdapter = new ServiceAdapter(getContext(), serviceList);
         recyclerView.setAdapter(serviceAdapter);
     }
 
-    /**
-     * TẢI DỮ LIỆU GỐC (Đã thêm Category Type)
-     */
     private void loadServiceData(String category) {
         serviceList.clear();
+        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
 
-        // Định nghĩa các loại danh mục
-        String CAT_CLEANING = "Dọn dẹp";
-        String CAT_REPAIRING = "Sửa chữa";
-        String CAT_LAUNDRY = "Giặt là";
-        String CAT_PAINTING = "Sơn";
 
-        if ("Tất cả".equals(category)) {
-            // Tải dữ liệu Cleaning
-            serviceList.add(new ServiceItem("Vệ sinh văn phòng", 60, 4.7f, 150, R.drawable.clean_office, CAT_CLEANING));
-            serviceList.add(new ServiceItem("Dọn vệ sinh", 60, 4.4f, 80, R.drawable.cleaning, CAT_CLEANING));
-            serviceList.add(new ServiceItem("Vệ sinh điều hòa", 50, 4.2f, 120, R.drawable.air, CAT_CLEANING));
-            serviceList.add(new ServiceItem("Vệ sinh văn phòng", 60, 4.7f, 150, R.drawable.clean_office, CAT_CLEANING));
 
-            // Tải dữ liệu Repairing
-            serviceList.add(new ServiceItem("Sửa chữa điện - nước", 45, 4.3f, 200, R.drawable.repair, CAT_REPAIRING));
-            serviceList.add(new ServiceItem("Sửa dồ điện dân dụng", 80, 4.6f, 95, R.drawable.repair_electric, CAT_REPAIRING));
+        com.google.firebase.firestore.Query query = db.collection("services");
+        
+        query.get()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                serviceList.clear();
+                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                    ServiceItem service = doc.toObject(ServiceItem.class);
+                    if (service != null) {
+                        service.setServiceId(doc.getId());
+                        serviceList.add(service);
+                    }
+                }
 
-            // Tải dữ liệu Laundry
-            serviceList.add(new ServiceItem("Giặt ủi ", 55, 4.8f, 180, R.drawable.laundry, CAT_LAUNDRY));
-
-            // Tải dữ liệu Painting
-            serviceList.add(new ServiceItem("Sơn sửa nhà cửa", 70, 4.1f, 70, R.drawable.painting, CAT_PAINTING));
-        }
-        // 2. TRƯỜNG HỢP CÁC TAB CỤ THỂ
-        else if ("Dọn vệ sinh".equals(category)) {
-            serviceList.add(new ServiceItem("Vệ sinh văn phòng", 60, 4.7f, 150, R.drawable.clean_office, CAT_CLEANING));
-            serviceList.add(new ServiceItem("Dọn vệ sinh", 60, 4.4f, 80, R.drawable.cleaning, CAT_CLEANING));
-            serviceList.add(new ServiceItem("Vệ sinh điều hòa", 50, 4.2f, 120, R.drawable.air, CAT_CLEANING));
-        } else if ("Sửa chữa".equals(category)) {
-            serviceList.add(new ServiceItem("Sửa chữa điện - nước", 45, 4.3f, 200, R.drawable.repair, CAT_REPAIRING));
-            serviceList.add(new ServiceItem("Sửa dồ điện dân dụng", 80, 4.6f, 95, R.drawable.repair_electric, CAT_REPAIRING));
-        } else if ("Giặt ủi".equals(category)) {
-            serviceList.add(new ServiceItem("Giặt ủi ", 55, 4.8f, 180, R.drawable.laundry, CAT_LAUNDRY));
-        } else if ("Sơn sửa".equals(category)) {
-            serviceList.add(new ServiceItem("Sơn sửa nhà cửa", 70, 4.1f, 70, R.drawable.painting, CAT_PAINTING));
-        } else {
-            serviceList.add(new ServiceItem("Default Service 1", 55, 4.0f, 50, R.drawable.placeholder_service, "Khác"));
-        }
+                originalServiceList = new ArrayList<>(serviceList);
+                serviceAdapter.notifyDataSetChanged();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(getContext(), "Lỗi tải dịch vụ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
     }
 
-    /**
-     * PHƯƠNG THỨC LỌC MỚI: Áp dụng bộ lọc Giá và Danh mục
-     */
     public void applyFilter(float minPrice, float maxPrice, String selectedCategories) {
         if (originalServiceList == null || serviceAdapter == null) {
             return;
@@ -122,15 +101,10 @@ public class ServiceListFragment extends Fragment {
             boolean matchesCategory = false;
 
             if ("Tất cả".equals(categoryName) && selectedCats.length > 0) {
-                // Nếu đang ở tab "Tất cả" VÀ có Chip được chọn
                 for (String cat : selectedCats) {
-                    if (item.getCategoryType().equals(cat.trim())) { // Kiểm tra khớp chính xác
-                        matchesCategory = true;
-                        break;
-                    }
+                    matchesCategory = true;
                 }
             } else {
-                // Trường hợp 1: Không có Chip nào được chọn (Hoặc tab cụ thể) -> Bỏ qua lọc danh mục (luôn TRUE)
                 matchesCategory = true;
             }
 
@@ -165,7 +139,7 @@ public class ServiceListFragment extends Fragment {
                 Collections.sort(serviceList, (item1, item2) -> Integer.compare(item2.getPrice(), item1.getPrice()));
                 break;
             case "RATING_DESC":
-                Collections.sort(serviceList, (item1, item2) -> Float.compare(item2.getRating(), item1.getRating()));
+                Collections.sort(serviceList, (item1, item2) -> Double.compare(item2.getRating(), item1.getRating()));
                 break;
             case "REVIEWS_DESC":
                 Collections.sort(serviceList, (item1, item2) -> Integer.compare(item2.getReviewCount(), item1.getReviewCount()));
