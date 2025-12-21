@@ -51,6 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dọn dẹp"
+                android:lines="2"
+                android:ellipsize="end"
                 android:textColor="#000000"
                 android:textSize="14sp"
                 android:textStyle="bold"/>
@@ -68,8 +70,10 @@
                     android:layout_weight="1"
                     android:text="60.000/h"
                     android:textColor="#2196F3"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
 
                 <ImageView
                     android:layout_width="14dp"
@@ -82,6 +86,7 @@
                     android:id="@+id/tvRate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:text="4.9"
                     android:textColor="#666666"
                     android:textSize="12sp"/>

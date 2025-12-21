@@ -41,10 +41,11 @@
                 android:id="@+id/tvTabUpcoming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chờ xác nhận"
-                android:textColor="#2196F3"
-                android:textSize="15sp"
-                android:textStyle="bold"/>
+                android:text="Chờ duyệt"
+                android:textColor="@color/blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
 
             <View
                 android:id="@+id/indicatorUpcoming"
@@ -71,7 +72,7 @@
                 android:id="@+id/tvTabCompleted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đang thực hiện"
+                android:text="Đang làm"
                 android:textColor="#999999"
                 android:textSize="15sp"/>
 
@@ -100,7 +101,7 @@
                 android:id="@+id/tvTabCancelled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hoàn thành"
+                android:text="Lịch sử"
                 android:textColor="#999999"
                 android:textSize="15sp"/>
 

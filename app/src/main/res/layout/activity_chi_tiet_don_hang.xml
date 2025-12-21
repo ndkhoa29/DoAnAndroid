@@ -95,6 +95,7 @@
 
         <!-- Phương thức thanh toán -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardPaymentMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -186,13 +187,6 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tvProviderRole"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nhân viên dọn dẹp"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout

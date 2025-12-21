@@ -76,6 +76,11 @@ public class ServiceListFragment extends Fragment {
 
         serviceList = new ArrayList<>();
         originalServiceList = new ArrayList<>();
+        serviceList = new ArrayList<>();
+
+        loadServiceData(categoryName);
+        
+        originalServiceList = new ArrayList<>(serviceList);
 
         serviceAdapter = new ServiceAdapter(getContext(), serviceList);
         recyclerView.setAdapter(serviceAdapter);
@@ -209,6 +214,33 @@ public class ServiceListFragment extends Fragment {
     /**
      * Apply filter for price and categories
      */
+    private void loadServiceData(String category) {
+        serviceList.clear();
+        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+
+
+
+        com.google.firebase.firestore.Query query = db.collection("services");
+        
+        query.get()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                serviceList.clear();
+                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                    ServiceItem service = doc.toObject(ServiceItem.class);
+                    if (service != null) {
+                        service.setServiceId(doc.getId());
+                        serviceList.add(service);
+                    }
+                }
+
+                originalServiceList = new ArrayList<>(serviceList);
+                serviceAdapter.notifyDataSetChanged();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(getContext(), "Lỗi tải dịch vụ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+    }
+
     public void applyFilter(float minPrice, float maxPrice, String selectedCategories) {
         if (originalServiceList == null || serviceAdapter == null) {
             return;
@@ -233,6 +265,10 @@ public class ServiceListFragment extends Fragment {
                 }
             } else {
                 // No chips selected or specific tab -> skip category filter
+                for (String cat : selectedCats) {
+                    matchesCategory = true;
+                }
+            } else {
                 matchesCategory = true;
             }
 
@@ -273,6 +309,7 @@ public class ServiceListFragment extends Fragment {
             case "RATING_DESC":
                 Collections.sort(serviceList, (item1, item2) ->
                         Double.compare(item2.getRating(), item1.getRating()));
+                Collections.sort(serviceList, (item1, item2) -> Double.compare(item2.getRating(), item1.getRating()));
                 break;
             case "REVIEWS_DESC":
                 Collections.sort(serviceList, (item1, item2) ->

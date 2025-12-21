@@ -1,13 +1,11 @@
 package com.example.homeserviceapp.models;
 
-import com.google.firebase.Timestamp;
-
 public class Message {
     private String messageId;
     private String senderId;
     private String text;
     private boolean isRead;
-    private Timestamp createdAt;
+    private long createdAt;
 
     public Message() {}
 
@@ -15,6 +13,7 @@ public class Message {
         this.senderId = senderId;
         this.text = text;
         this.isRead = false;
+        this.createdAt = System.currentTimeMillis();
     }
 
     public String getMessageId() {
@@ -49,11 +48,11 @@ public class Message {
         isRead = read;
     }
 
-    public Timestamp getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 }

@@ -65,11 +65,22 @@ public class CalendarActivity extends AppCompatActivity {
 
     private List<BookingItem> bookedSlots = new ArrayList<>();
     private List<Button> timeSlotButtons = new ArrayList<>();
+    private String serviceName;
+    private String serviceId;
+    private String servicePrice;
+    private String serviceImage; // New Image URL field
+    private String selectedTime = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        
+        // Receive data from ServiceDetailActivity
+        serviceName = getIntent().getStringExtra("service_name");
+        serviceId = getIntent().getStringExtra("service_id");
+        servicePrice = getIntent().getStringExtra("service_price");
+        serviceImage = getIntent().getStringExtra("service_image"); // Get Image URL
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -118,6 +129,8 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime3 = findViewById(R.id.btnTime3);
         btnTime4 = findViewById(R.id.btnTime4);
         btnContinue = findViewById(R.id.btnContinue);
+        
+        android.widget.EditText etAddress = findViewById(R.id.etAddress);
 
         etAddress = findViewById(R.id.etAddress);
 
@@ -181,6 +194,7 @@ public class CalendarActivity extends AppCompatActivity {
             selectedTimeSlot = clicked.getText().toString();
 
             Log.d(TAG, "Selected time slot: " + selectedTimeSlot);
+            selectedTime = clicked.getText().toString();
         };
 
         btnTime1.setOnClickListener(timeClickListener);
@@ -189,6 +203,31 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime4.setOnClickListener(timeClickListener);
 
         btnContinue.setOnClickListener(v -> onContinueClicked());
+        btnContinue.setOnClickListener(v -> {
+            String address = etAddress.getText().toString().trim();
+            
+            if (selectedTime == null) {
+                Toast.makeText(this, "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (address.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String selectedDate = dateFormat.format(calendar.getTime());
+
+            Intent intent = new Intent(CalendarActivity.this, ChiTietDonDatActivity.class);
+            intent.putExtra("SERVICE_NAME", serviceName);
+            intent.putExtra("SERVICE_ID", serviceId);
+            intent.putExtra("SERVICE_PRICE", servicePrice);
+            intent.putExtra("SERVICE_IMAGE", serviceImage); // Pass Image URL
+            intent.putExtra("BOOKING_DATE", selectedDate);
+            intent.putExtra("BOOKING_TIME", selectedTime);
+            intent.putExtra("BOOKING_ADDRESS", address);
+            startActivity(intent);
+        });
 
         btnCalendarIcon.setOnClickListener(v -> {
             int year = calendar.get(Calendar.YEAR);

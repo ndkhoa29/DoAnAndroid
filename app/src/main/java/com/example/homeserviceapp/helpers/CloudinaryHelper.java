@@ -79,13 +79,11 @@ public class CloudinaryHelper {
         if (imageUrl == null || imageUrl.isEmpty()) {
             return "";
         }
-        
-        // Check if it's a Cloudinary URL
+
         if (!imageUrl.contains("cloudinary.com")) {
             return imageUrl;
         }
-        
-        // Insert transformation parameters
+
         String transformation = "w_" + width + ",h_" + height + ",c_fill,q_auto,f_auto";
         return imageUrl.replace("/upload/", "/upload/" + transformation + "/");
     }
