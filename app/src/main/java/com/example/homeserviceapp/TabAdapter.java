@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.List;
 
 public class TabAdapter extends FragmentStateAdapter {
-    private List<String> categoryNames;
+    private final List<String> categoryNames;
 
     public TabAdapter(@NonNull FragmentActivity fragmentActivity, List<String> titles) {
         super(fragmentActivity);
@@ -20,6 +20,7 @@ public class TabAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         ServiceListFragment fragment = new ServiceListFragment();
         Bundle args = new Bundle();
+        // Truyền tên tiếng Việt (ví dụ: "Dọn dẹp") sang Fragment
         args.putString("CATEGORY_NAME", categoryNames.get(position));
         fragment.setArguments(args);
         return fragment;
@@ -27,6 +28,6 @@ public class TabAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return categoryNames.size();
+        return categoryNames != null ? categoryNames.size() : 0;
     }
 }

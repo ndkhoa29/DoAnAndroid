@@ -2,157 +2,122 @@ package com.example.homeserviceapp;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import androidx.recyclerview.widget.*;
+import com.google.firebase.firestore.*;
+import java.util.*;
 
 public class ServiceListFragment extends Fragment {
-
     private RecyclerView recyclerView;
     private ServiceAdapter serviceAdapter;
     private ProgressBar progressBar;
-
     private List<ServiceItem> serviceList = new ArrayList<>();
     private List<ServiceItem> originalServiceList = new ArrayList<>();
-
     private String categoryName;
-    private FirebaseFirestore db;
-
-    public ServiceListFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = FirebaseFirestore.getInstance();
-        if (getArguments() != null) {
-            categoryName = getArguments().getString("CATEGORY_NAME");
-        } else {
-            categoryName = "Tất cả";
-        }
+        if (getArguments() != null) categoryName = getArguments().getString("CATEGORY_NAME");
     }
 
+    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_service_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         recyclerView = view.findViewById(R.id.recycler_services_fragment);
         progressBar = view.findViewById(R.id.progress_bar_service);
-
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         serviceAdapter = new ServiceAdapter(getContext(), serviceList);
         recyclerView.setAdapter(serviceAdapter);
-
-        loadServiceDataFromFirestore(categoryName);
+        loadData();
     }
 
-    private void loadServiceDataFromFirestore(String category) {
+    private void loadData() {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        FirebaseFirestore.getInstance().collection("services").get().addOnCompleteListener(task -> {
+            if (!isAdded()) return;
+            if (progressBar != null) progressBar.setVisibility(View.GONE);
 
-        db.collection("services")
-                .get()
-                .addOnCompleteListener(task -> {
-                    // Kiểm tra Fragment còn tồn tại không
-                    if (!isAdded() || getContext() == null) return;
+            if (task.isSuccessful() && task.getResult() != null) {
+                serviceList.clear();
+                String currentTabId = mapTabNameToId(categoryName);
 
-                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                for (QueryDocumentSnapshot doc : task.getResult()) {
+                    ServiceItem item = doc.toObject(ServiceItem.class);
+                    String dbCatId = (item.getCategoryType() != null) ? item.getCategoryType().trim() : "";
 
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        serviceList.clear();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            ServiceItem item = document.toObject(ServiceItem.class);
-
-                            // SỬA LỖI: Kiểm tra null cho categoryType và so sánh không phân biệt hoa thường
-                            String itemCat = item.getCategoryType();
-                            if ("Tất cả".equalsIgnoreCase(category) ||
-                                    (itemCat != null && itemCat.equalsIgnoreCase(category))) {
-                                serviceList.add(item);
-                            }
-                        }
-
-                        originalServiceList = new ArrayList<>(serviceList);
-                        sortData("RATING_DESC");
-                        serviceAdapter.notifyDataSetChanged();
-
-                        // Thêm thông báo nếu danh sách trống
-                        if (serviceList.isEmpty()) {
-                            Log.d("DEBUG", "Không có dữ liệu cho danh mục: " + category);
-                        }
-                    } else {
-                        Log.e("FIRESTORE_ERROR", "Lỗi tải dữ liệu", task.getException());
-                        Toast.makeText(getContext(), "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
+                    // Lọc theo Tab hiện tại
+                    if ("Tất cả".equalsIgnoreCase(categoryName) || dbCatId.equalsIgnoreCase(currentTabId)) {
+                        serviceList.add(item);
                     }
-                });
+                }
+                // QUAN TRỌNG: Lưu danh sách gốc để lọc giá không bị mất dữ liệu
+                originalServiceList = new ArrayList<>(serviceList);
+                serviceAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
-    public void applyFilter(float minPrice, float maxPrice, String selectedCategories) {
+    public void applyFilter(float min, float max, String selectedCats) {
         if (originalServiceList == null || originalServiceList.isEmpty()) return;
 
-        String[] selectedCats = selectedCategories.isEmpty() ? new String[0] : selectedCategories.split(", ");
-        List<ServiceItem> filteredList = new ArrayList<>();
+        // 1. Chuyển đổi tên Chip sang danh sách ID
+        List<String> selectedIdList = new ArrayList<>();
+        if (selectedCats != null && !selectedCats.isEmpty()) {
+            for (String s : selectedCats.split(",")) {
+                String id = mapTabNameToId(s.trim());
+                if (!id.isEmpty()) selectedIdList.add(id.toLowerCase());
+            }
+        }
 
+        List<ServiceItem> filtered = new ArrayList<>();
         for (ServiceItem item : originalServiceList) {
-            boolean matchesPrice = item.getPrice() >= minPrice && item.getPrice() <= maxPrice;
-            boolean matchesCategory = true;
+            // 2. Logic lọc giá chuẩn VNĐ (ví dụ: 80000 nằm trong 0 - 120000)
+            boolean matchesPrice = item.getPrice() >= min && item.getPrice() <= max;
 
-            // Lọc category phụ khi ở Tab "Tất cả"
-            if ("Tất cả".equalsIgnoreCase(categoryName) && selectedCats.length > 0) {
-                matchesCategory = false;
-                for (String cat : selectedCats) {
-                    if (item.getCategoryType() != null &&
-                            item.getCategoryType().equalsIgnoreCase(cat.trim())) {
-                        matchesCategory = true;
-                        break;
-                    }
+            // 3. Logic lọc danh mục: Mặc định là True để không chặn lọc giá
+            boolean matchesCat = true;
+            if (!selectedIdList.isEmpty()) {
+                matchesCat = false;
+                if (item.getCategoryType() != null) {
+                    String itemCatId = item.getCategoryType().toLowerCase().trim();
+                    if (selectedIdList.contains(itemCatId)) matchesCat = true;
                 }
             }
 
-            if (matchesPrice && matchesCategory) {
-                filteredList.add(item);
-            }
+            if (matchesPrice && matchesCat) filtered.add(item);
         }
 
+        // 4. Cập nhật giao diện
         serviceList.clear();
-        serviceList.addAll(filteredList);
+        serviceList.addAll(filtered);
         serviceAdapter.notifyDataSetChanged();
+
+        if (filtered.isEmpty()) {
+            Toast.makeText(getContext(), "Không tìm thấy kết quả", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    public void sortData(String sortType) {
-        if (serviceList == null || serviceList.isEmpty()) return;
-
-        switch (sortType) {
-            case "PRICE_ASC":
-                Collections.sort(serviceList, (i1, i2) -> Integer.compare(i1.getPrice(), i2.getPrice()));
-                break;
-            case "PRICE_DESC":
-                Collections.sort(serviceList, (i1, i2) -> Integer.compare(i2.getPrice(), i1.getPrice()));
-                break;
-            case "RATING_DESC":
-                Collections.sort(serviceList, (i1, i2) -> Float.compare(i2.getRating(), i1.getRating()));
-                break;
+    private String mapTabNameToId(String name) {
+        if (name == null) return "";
+        switch (name.trim()) {
+            case "Dọn dẹp": return "cat_cleaning";
+            case "Sửa chữa": return "cat_repair";
+            case "Làm đẹp": return "cat_beauty";
+            case "Sức khỏe": return "cat_healthcare";
+            case "Vận chuyển": return "cat_moving";
+            case "Gia sư": return "cat_tutoring";
+            default: return "";
         }
-        serviceAdapter.notifyDataSetChanged();
     }
 }
