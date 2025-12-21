@@ -21,6 +21,25 @@ public class Review {
     // Empty constructor for Firestore
     public Review() {}
 
+    // Constructor for creating review from booking
+    public Review(String bookingId, String customerId, String customerName, String serviceId, String serviceName, float rating, String comment) {
+        this.bookingId = bookingId;
+        this.customerId = customerId;
+        this.serviceId = serviceId;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = com.google.firebase.Timestamp.now();
+        
+        // Create customer info map
+        this.customerInfo = new java.util.HashMap<>();
+        this.customerInfo.put("name", customerName);
+        this.customerInfo.put("id", customerId);
+        
+        // Set service name if needed (may not be in original model)
+        // Store in adminResponse or another field as needed
+    }
+
+
     // Getters and Setters
     public String getReviewId() {
         return reviewId;

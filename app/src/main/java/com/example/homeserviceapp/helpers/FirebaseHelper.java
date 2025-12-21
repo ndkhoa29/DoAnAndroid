@@ -40,7 +40,7 @@ public class FirebaseHelper {
             .get()
             .addOnSuccessListener(querySnapshot -> {
                 List<ServiceItem> services = querySnapshot.toObjects(ServiceItem.class);
-                // Set serviceId from document ID
+
                 for (int i = 0; i < services.size(); i++) {
                     services.get(i).setServiceId(querySnapshot.getDocuments().get(i).getId());
                 }
@@ -99,7 +99,7 @@ public class FirebaseHelper {
 
     public void getUserBookings(String userId, OnBookingsLoadedListener listener) {
         db.collection(COLLECTION_BOOKINGS)
-            .whereEqualTo("customerId", userId)
+            .whereEqualTo("userId", userId) // Changed from customerId to userId matching Booking model
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener((snapshots, error) -> {
                 if (error != null) {
@@ -107,12 +107,12 @@ public class FirebaseHelper {
                     return;
                 }
                 
-                List<BookingItem> bookings = new ArrayList<>();
+                List<Booking> bookings = new ArrayList<>();
                 if (snapshots != null) {
                     for (DocumentSnapshot doc : snapshots) {
-                        BookingItem booking = doc.toObject(BookingItem.class);
+                        Booking booking = doc.toObject(Booking.class);
                         if (booking != null) {
-                            booking.setBookingId(doc.getId());
+                            // booking.setBookingId(doc.getId()); // ID should allow be inside object if saved correctly
                             bookings.add(booking);
                         }
                     }
@@ -123,7 +123,7 @@ public class FirebaseHelper {
 
     public void getBookingsByStatus(String userId, String status, OnBookingsLoadedListener listener) {
         db.collection(COLLECTION_BOOKINGS)
-            .whereEqualTo("customerId", userId)
+            .whereEqualTo("userId", userId)
             .whereEqualTo("status", status)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener((snapshots, error) -> {
@@ -132,12 +132,11 @@ public class FirebaseHelper {
                     return;
                 }
                 
-                List<BookingItem> bookings = new ArrayList<>();
+                List<Booking> bookings = new ArrayList<>();
                 if (snapshots != null) {
                     for (DocumentSnapshot doc : snapshots) {
-                        BookingItem booking = doc.toObject(BookingItem.class);
+                        Booking booking = doc.toObject(Booking.class);
                         if (booking != null) {
-                            booking.setBookingId(doc.getId());
                             bookings.add(booking);
                         }
                     }
@@ -205,7 +204,7 @@ public class FirebaseHelper {
     }
     
     public interface OnBookingsLoadedListener {
-        void onBookingsLoaded(List<BookingItem> bookings);
+        void onBookingsLoaded(List<Booking> bookings);
         void onError(String error);
     }
     
