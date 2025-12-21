@@ -20,16 +20,28 @@ import com.example.homeserviceapp.models.Category;
 import com.example.homeserviceapp.models.BannerItem;
 import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.firestore.Query;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
+    // ===== FIRESTORE =====
+    private FirebaseFirestore db;
+    private DocumentReference userRef;
+    private TextView tvCustomerName;
+
+    // ===== UI =====
     private ViewPager2 viewPagerBanner;
     private BannerAdapter bannerAdapter;
     private List<BannerItem> bannerList;
     private Handler sliderHandler = new Handler(Looper.getMainLooper());
     private TextView tvAllCategory, tvAllRated, tvAllPopular, tvUserName, tvNotificationBadge;
+
+    private TextView tvAllCategory, tvAllRated, tvAllPopular;
     private View dot1, dot2, dot3;
     private ImageView ivNotification, icFilter;
     
@@ -95,8 +107,15 @@ public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // ===== FIND VIEW =====
+        tvCustomerName = view.findViewById(R.id.tvCustomerName);
 
         viewPagerBanner = view.findViewById(R.id.viewPagerBanner);
         dot1 = view.findViewById(R.id.dot1);
@@ -158,15 +177,19 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(requireContext(), FilterActivity.class);
             filterLauncher.launch(intent);
         });
+        // ===== FIRESTORE INIT =====
+        db = FirebaseFirestore.getInstance();
+        userRef = db.collection("users").document("admin_001");
 
-        ivNotification.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ThongBaoActivity.class);
-            startActivity(intent);
-        });
+        userRef.addSnapshotListener((snapshot, e) -> {
+            if (e != null) return;
 
-        tvAllCategory.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), CategoryActivity.class);
-            startActivity(intent);
+            if (snapshot != null && snapshot.exists()) {
+                String name = snapshot.getString("fullName");
+                if (name != null && tvCustomerName != null) {
+                    tvCustomerName.setText("Xin chào, " + name);
+                }
+            }
         });
 
         tvAllRated.setOnClickListener(v -> {
@@ -180,22 +203,45 @@ public class HomeFragment extends Fragment {
             intent.putExtra("TYPE", "POPULAR");
             startActivity(intent);
         });
+        // ===== CLICK EVENTS =====
+        icFilter.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), FilterActivity.class))
+        );
 
+        ivNotification.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), ThongBaoActivity.class))
+        );
+
+        tvAllCategory.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), CategoryActivity.class))
+        );
+
+        tvAllRated.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), TabServiceActivity.class))
+        );
+
+        tvAllPopular.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), TabServiceActivity.class))
+        );
+
+        // ===== BANNER =====
         bannerList = new ArrayList<>();
         bannerAdapter = new BannerAdapter(getContext(), bannerList);
         viewPagerBanner.setAdapter(bannerAdapter);
         
         loadBanners();
 
-        viewPagerBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                updateDots(position);
-                sliderHandler.removeCallbacks(sliderRunnable);
-                sliderHandler.postDelayed(sliderRunnable, 3000);
-            }
-        });
+        viewPagerBanner.registerOnPageChangeCallback(
+                new ViewPager2.OnPageChangeCallback() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        super.onPageSelected(position);
+                        updateDots(position);
+                        sliderHandler.removeCallbacks(sliderRunnable);
+                        sliderHandler.postDelayed(sliderRunnable, 3000);
+                    }
+                }
+        );
 
         sliderHandler.postDelayed(sliderRunnable, 3000);
 
@@ -264,6 +310,11 @@ public class HomeFragment extends Fragment {
         rvCategories.setLayoutManager(layoutManager);
         rvCategories.setAdapter(categoryAdapter);
     }
+
+    // ===== SERVICE CARD CLICK =====
+    private void setClickForAllCards(View rootView) {
+        findAndSetClickListener(rootView);
+    }
     
     private void setupServicesRecyclerViews() {
 
@@ -304,6 +355,11 @@ public class HomeFragment extends Fragment {
     
     private void loadRatedServices() {
         com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+    private void findAndSetClickListener(View view) {
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                View child = group.getChildAt(i);
 
         db.collection("services")
             .orderBy("rating", Query.Direction.DESCENDING)
@@ -502,6 +558,43 @@ public class HomeFragment extends Fragment {
         searchResultList.clear();
         searchResultList.addAll(filteredList);
         searchResultAdapter.notifyDataSetChanged();
+                findAndSetClickListener(child);
+            }
+        }
+    }
+
+    private void openServiceDetail() {
+        startActivity(new Intent(getActivity(), ServiceDetailActivity.class));
+    }
+
+    // ===== SLIDER =====
+    private final Runnable sliderRunnable = () -> {
+        if (bannerList == null || bannerList.isEmpty()) return;
+
+        int currentItem = viewPagerBanner.getCurrentItem();
+        int nextItem = (currentItem + 1) % bannerList.size();
+        viewPagerBanner.setCurrentItem(nextItem, true);
+    };
+
+    private void updateDots(int position) {
+        dot1.setBackgroundTintList(
+                ContextCompat.getColorStateList(
+                        requireContext(),
+                        position == 0 ? R.color.blue : R.color.gray
+                )
+        );
+        dot2.setBackgroundTintList(
+                ContextCompat.getColorStateList(
+                        requireContext(),
+                        position == 1 ? R.color.blue : R.color.gray
+                )
+        );
+        dot3.setBackgroundTintList(
+                ContextCompat.getColorStateList(
+                        requireContext(),
+                        position == 2 ? R.color.blue : R.color.gray
+                )
+        );
     }
 
     @Override
