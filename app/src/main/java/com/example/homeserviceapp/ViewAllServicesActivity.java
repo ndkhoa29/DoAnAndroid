@@ -21,7 +21,9 @@ public class ViewAllServicesActivity extends AppCompatActivity {
     private RecyclerView rvServices;
     private ServiceAdapter serviceAdapter;
     private List<ServiceItem> serviceList;
-    private String type; // "RATED" or "POPULAR"
+    private String type; // "RATED", "POPULAR", or "CATEGORY"
+    private String categoryId;
+    private String categoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,8 @@ public class ViewAllServicesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_all_services);
 
         type = getIntent().getStringExtra("TYPE");
+        categoryId = getIntent().getStringExtra("CATEGORY_ID");
+        categoryName = getIntent().getStringExtra("CATEGORY_NAME");
 
         initViews();
         setupRecyclerView();
@@ -46,6 +50,8 @@ public class ViewAllServicesActivity extends AppCompatActivity {
             tvHeaderTitle.setText("Đánh giá cao");
         } else if ("POPULAR".equals(type)) {
             tvHeaderTitle.setText("Phổ biến nhất");
+        } else if ("CATEGORY".equals(type) && categoryName != null) {
+            tvHeaderTitle.setText(categoryName);
         } else {
             tvHeaderTitle.setText("Dịch vụ");
         }
@@ -78,6 +84,9 @@ public class ViewAllServicesActivity extends AppCompatActivity {
             query = query.orderBy("rating", Query.Direction.DESCENDING);
         } else if ("POPULAR".equals(type)) {
             query = query.orderBy("bookingCount", Query.Direction.DESCENDING);
+        } else if ("CATEGORY".equals(type) && categoryId != null) {
+            query = query.whereEqualTo("categoryId", categoryId);
+            // Toast.makeText(this, "Đang tải dịch vụ: " + categoryName, Toast.LENGTH_SHORT).show();
         }
 
         query.get()
@@ -85,10 +94,17 @@ public class ViewAllServicesActivity extends AppCompatActivity {
                 serviceList.clear();
                 for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
                     ServiceItem service = doc.toObject(ServiceItem.class);
-                    if (service != null) {
+                    // DEBUG: Removed isActive check temporarily to debug data issues
+                    if (service != null /* && service.isActive() */) { 
                         service.setServiceId(doc.getId());
                         serviceList.add(service);
                     }
+                }
+                
+                if (serviceList.isEmpty() && "CATEGORY".equals(type)) {
+                    Toast.makeText(this, "Không tìm thấy dịch vụ nào cho danh mục này", Toast.LENGTH_SHORT).show();
+                } else if ("CATEGORY".equals(type)) {
+                    // Toast.makeText(this, "Đã tìm thấy " + serviceList.size() + " dịch vụ", Toast.LENGTH_SHORT).show();
                 }
                 
                 // Fallback sort if index is missing and query returns unsorted results or if explicit sort fails
@@ -102,13 +118,22 @@ public class ViewAllServicesActivity extends AppCompatActivity {
             })
             .addOnFailureListener(e -> {
                 // If orderBy fails (e.g., missing index), fall back to client-side sorting
+                // For Category query, it shouldn't fail on index usually as it's a simple equality
                 db.collection("services").get().addOnSuccessListener(retrySnapshots -> {
                      serviceList.clear();
                      for (com.google.firebase.firestore.DocumentSnapshot doc : retrySnapshots) {
                          ServiceItem service = doc.toObject(ServiceItem.class);
-                         if (service != null) {
-                             service.setServiceId(doc.getId());
-                             serviceList.add(service);
+                         if (service != null /* && service.isActive() */) {
+                              boolean matches = true;
+                              if ("CATEGORY".equals(type) && categoryId != null) {
+                                  // Use exact matching for category ID
+                                  matches = categoryId.equals(service.getCategoryId());
+                              }
+                              
+                              if (matches) {
+                                  service.setServiceId(doc.getId());
+                                  serviceList.add(service);
+                              }
                          }
                      }
                      if ("RATED".equals(type)) {

@@ -255,7 +255,9 @@ public class HomeFragment extends Fragment {
     private void setupCategoriesRecyclerView() {
         categoryList = new ArrayList<>();
         categoryAdapter = new CategoryAdapter(getContext(), categoryList, category -> {
-            Intent intent = new Intent(requireContext(), CategoryActivity.class);
+            Intent intent = new Intent(requireContext(), ViewAllServicesActivity.class);
+            intent.putExtra("TYPE", "CATEGORY");
+            intent.putExtra("CATEGORY_ID", category.getCategoryId());
             intent.putExtra("CATEGORY_NAME", category.getName());
             startActivity(intent);
         });

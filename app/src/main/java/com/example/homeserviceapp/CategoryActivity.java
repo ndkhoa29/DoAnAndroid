@@ -38,13 +38,10 @@ public class CategoryActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         categoryList = new ArrayList<>();
         categoryAdapter = new CategoryAdapter(this, categoryList, category -> {
-            // Khi click vào 1 category, có thể mở TabServiceActivity với filter category đó
-            // Hoặc hiển thị danh sách service của category đó
-            // Tạm thời hiển thị Toast hoặc navigate đến ServiceList nếu cần
-            Intent intent = new Intent(CategoryActivity.this, TabServiceActivity.class);
+            Intent intent = new Intent(CategoryActivity.this, ViewAllServicesActivity.class);
+            intent.putExtra("TYPE", "CATEGORY");
             intent.putExtra("CATEGORY_ID", category.getCategoryId());
             intent.putExtra("CATEGORY_NAME", category.getName());
-            // TabServiceActivity cần handle extra này để switch tab hoặc filter
             startActivity(intent);
         });
         

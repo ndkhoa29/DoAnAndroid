@@ -29,15 +29,6 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_service_repo"/>
 
-            <ImageView
-                android:id="@+id/ivFavorite"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="8dp"
-                android:background="@drawable/bg_notification_icon"
-                android:padding="6dp"
-                android:src="@drawable/ic_heart_outline"/>
         </RelativeLayout>
 
         <LinearLayout
