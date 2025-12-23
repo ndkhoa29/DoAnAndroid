@@ -65,22 +65,11 @@ public class CalendarActivity extends AppCompatActivity {
 
     private List<BookingItem> bookedSlots = new ArrayList<>();
     private List<Button> timeSlotButtons = new ArrayList<>();
-    private String serviceName;
-    private String serviceId;
-    private String servicePrice;
-    private String serviceImage; // New Image URL field
-    private String selectedTime = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        
-        // Receive data from ServiceDetailActivity
-        serviceName = getIntent().getStringExtra("service_name");
-        serviceId = getIntent().getStringExtra("service_id");
-        servicePrice = getIntent().getStringExtra("service_price");
-        serviceImage = getIntent().getStringExtra("service_image"); // Get Image URL
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -112,6 +101,8 @@ public class CalendarActivity extends AppCompatActivity {
 
         loadServiceDetails();
 
+        setupCalendar();
+
         loadBookedSlots(selectedDate);
 
         setupListeners();
@@ -129,10 +120,6 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime3 = findViewById(R.id.btnTime3);
         btnTime4 = findViewById(R.id.btnTime4);
         btnContinue = findViewById(R.id.btnContinue);
-        
-        android.widget.EditText etAddress = findViewById(R.id.etAddress);
-
-        etAddress = findViewById(R.id.etAddress);
 
         progressBar = findViewById(R.id.progressBar);
         if (progressBar != null) {
@@ -143,6 +130,17 @@ public class CalendarActivity extends AppCompatActivity {
         timeSlotButtons.add(btnTime2);
         timeSlotButtons.add(btnTime3);
         timeSlotButtons.add(btnTime4);
+    }
+    private void setupCalendar(){
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY,0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        calendarView.setMinDate(today.getTimeInMillis());
+
+        Log.d(TAG, "Calendar minDate set to: " + today.getTime());
     }
 
     private void setupListeners() {
@@ -243,7 +241,6 @@ public class CalendarActivity extends AppCompatActivity {
                         calendarView.setDate(calendar.getTimeInMillis(), false, true);
                         updateMonthLabel();
 
-                        // Update selected date and load slots
                         selectedDate = formatDateForFirebase(calendar.getTime());
                         loadBookedSlots(selectedDate);
                     },
@@ -287,7 +284,6 @@ public class CalendarActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        // Reset all time slot buttons
         for (Button button : timeSlotButtons) {
             button.setEnabled(true);
             button.setAlpha(1.0f);
@@ -364,13 +360,12 @@ public class CalendarActivity extends AppCompatActivity {
 
             for (Button button : timeSlotButtons) {
                 if (button.getText().toString().equals(timeSlot)) {
-                    // Disable button
+
                     button.setEnabled(false);
                     button.setAlpha(0.3f);
 
                     button.setBackgroundResource(R.drawable.time_button_bg_disabled);
 
-                    // If this was the selected button, clear selection
                     if (button == selectedTimeButton) {
                         selectedTimeButton = null;
                         selectedTimeSlot = null;
@@ -382,7 +377,7 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void onContinueClicked() {
-        // Validate inputs
+
         if (selectedDate == null || selectedDate.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn ngày", Toast.LENGTH_SHORT).show();
             return;
