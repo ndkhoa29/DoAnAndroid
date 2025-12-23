@@ -35,7 +35,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
     private String serviceId;
     private ServiceItem currentService;
 
-    private String serviceId;
+    private String serviceID;
     private String serviceName;
     private String servicePrice;
     private String providerName;

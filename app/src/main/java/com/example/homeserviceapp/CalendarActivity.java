@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.homeserviceapp.BookingItem;
+import com.example.homeserviceapp.models.BookingItem;
 import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;

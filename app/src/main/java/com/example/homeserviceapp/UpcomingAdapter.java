@@ -9,6 +9,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.homeserviceapp.models.BookingItem;
+
 import java.util.List;
 
 public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.BookingViewHolder> {

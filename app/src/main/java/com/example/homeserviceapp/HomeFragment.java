@@ -29,12 +29,10 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    // ===== FIRESTORE =====
     private FirebaseFirestore db;
     private DocumentReference userRef;
     private TextView tvCustomerName;
 
-    // ===== UI =====
     private ViewPager2 viewPagerBanner;
     private BannerAdapter bannerAdapter;
     private List<BannerItem> bannerList;
@@ -177,7 +175,6 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(requireContext(), FilterActivity.class);
             filterLauncher.launch(intent);
         });
-        // ===== FIRESTORE INIT =====
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("users").document("admin_001");
 
@@ -203,7 +200,6 @@ public class HomeFragment extends Fragment {
             intent.putExtra("TYPE", "POPULAR");
             startActivity(intent);
         });
-        // ===== CLICK EVENTS =====
         icFilter.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), FilterActivity.class))
         );
@@ -224,7 +220,6 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(requireContext(), TabServiceActivity.class))
         );
 
-        // ===== BANNER =====
         bannerList = new ArrayList<>();
         bannerAdapter = new BannerAdapter(getContext(), bannerList);
         viewPagerBanner.setAdapter(bannerAdapter);
@@ -311,7 +306,6 @@ public class HomeFragment extends Fragment {
         rvCategories.setAdapter(categoryAdapter);
     }
 
-    // ===== SERVICE CARD CLICK =====
     private void setClickForAllCards(View rootView) {
         findAndSetClickListener(rootView);
     }
@@ -389,7 +383,6 @@ public class HomeFragment extends Fragment {
                                  ratedServiceList.add(service);
                              }
                          }
-                         // Sort manually
                          ratedServiceList.sort((s1, s2) -> Double.compare(s2.getRating(), s1.getRating()));
                          ratedServiceAdapter.notifyDataSetChanged();
                      });
@@ -398,8 +391,7 @@ public class HomeFragment extends Fragment {
 
     private void loadPopularServices() {
         com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
-        // Load popular services (order by bookingCount)
+
         db.collection("services")
             .orderBy("bookingCount", Query.Direction.DESCENDING)
             .limit(10)
@@ -416,7 +408,7 @@ public class HomeFragment extends Fragment {
                 popularServiceAdapter.notifyDataSetChanged();
             })
             .addOnFailureListener(e -> {
-                 // Try without ordering in case index is missing
+
                  db.collection("services")
                      .limit(10)
                      .get()
@@ -429,7 +421,6 @@ public class HomeFragment extends Fragment {
                                  popularServiceList.add(service);
                              }
                          }
-                         // Sort manually
                          popularServiceList.sort((s1, s2) -> Integer.compare(s2.getBookingCount(), s1.getBookingCount()));
                          popularServiceAdapter.notifyDataSetChanged();
                      });
@@ -476,16 +467,15 @@ public class HomeFragment extends Fragment {
                         bannerList.add(banner);
                     }
                 }
-                
-                // Nếu không có banners, thêm placeholder
+
                 if (bannerList.isEmpty()) {
-                    // Keep empty or add default banner if needed
+
                 }
                 
                 bannerAdapter.notifyDataSetChanged();
             })
             .addOnFailureListener(e -> {
-                // Keep empty if failed
+
             });
     }
 
@@ -493,12 +483,10 @@ public class HomeFragment extends Fragment {
         searchResultList = new ArrayList<>();
         allServicesBackup = new ArrayList<>();
         searchResultAdapter = new ServiceAdapter(getContext(), searchResultList);
-        
-        // Use Grid for search results
+
         searchResultAdapter.setGridMode(true);
         rvSearchResults.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(getContext(), 2));
-        
-         // Add Spacing (reusing the one we made)
+
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
         rvSearchResults.addItemDecoration(new com.example.homeserviceapp.helpers.GridSpacingItemDecoration(2, spacingInPixels, true));
         
@@ -521,7 +509,6 @@ public class HomeFragment extends Fragment {
                 }
             })
             .addOnFailureListener(e -> {
-                // Fail silently or log
             });
     }
 
@@ -567,7 +554,6 @@ public class HomeFragment extends Fragment {
         startActivity(new Intent(getActivity(), ServiceDetailActivity.class));
     }
 
-    // ===== SLIDER =====
     private final Runnable sliderRunnable = () -> {
         if (bannerList == null || bannerList.isEmpty()) return;
 
