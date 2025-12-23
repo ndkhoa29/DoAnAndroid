@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.homeserviceapp.models.BookingItem;
+import com.example.homeserviceapp.BookingItem;
 import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,9 +38,11 @@ public class CalendarActivity extends AppCompatActivity {
 
     private static final String TAG = "CalendarActivity";
 
+    // Firebase
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    // Views
     private CalendarView calendarView;
     private TextView tvMonth;
     private ImageView btnBack;
@@ -53,16 +55,18 @@ public class CalendarActivity extends AppCompatActivity {
     private Calendar calendar;
     private SimpleDateFormat monthFormat;
 
-
+    // Data from Intent
     private String serviceId;
     private String serviceName;
     private String servicePrice;
     private String providerName;
     private ServiceItem serviceItem;
 
+    // Selected values
     private String selectedDate;
     private String selectedTimeSlot;
 
+    // Booked slots
     private List<BookingItem> bookedSlots = new ArrayList<>();
     private List<Button> timeSlotButtons = new ArrayList<>();
 
@@ -71,9 +75,11 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
+        // Initialize Firebase
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // Get data from Intent
         serviceId = getIntent().getStringExtra("serviceId");
         serviceName = getIntent().getStringExtra("service_name");
         servicePrice = getIntent().getStringExtra("service_price");
@@ -85,26 +91,34 @@ public class CalendarActivity extends AppCompatActivity {
             return;
         }
 
+        // Initialize views
         initViews();
 
+        // Initialize calendar
         calendar = Calendar.getInstance();
         monthFormat = new SimpleDateFormat("MMMM yyyy", new Locale("vi"));
 
+        // Set selected date to today
         selectedDate = formatDateForFirebase(calendar.getTime());
 
         updateMonthLabel();
 
+        // Set default button styles
         setDefaultButtonStyle(btnTime1);
         setDefaultButtonStyle(btnTime2);
         setDefaultButtonStyle(btnTime3);
         setDefaultButtonStyle(btnTime4);
 
+        // Load service details from Firebase
         loadServiceDetails();
 
+        // Setup calendar (IMPORTANT: Disable past dates)
         setupCalendar();
 
+        // Load booked slots for today
         loadBookedSlots(selectedDate);
 
+        // Setup listeners
         setupListeners();
     }
 
@@ -120,61 +134,74 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime3 = findViewById(R.id.btnTime3);
         btnTime4 = findViewById(R.id.btnTime4);
         btnContinue = findViewById(R.id.btnContinue);
+        etAddress = findViewById(R.id.etAddress);
 
         progressBar = findViewById(R.id.progressBar);
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
 
+        // Add all time buttons to list
         timeSlotButtons.add(btnTime1);
         timeSlotButtons.add(btnTime2);
         timeSlotButtons.add(btnTime3);
         timeSlotButtons.add(btnTime4);
     }
-    private void setupCalendar(){
+
+    private void setupCalendar() {
+        // IMPORTANT: Set minimum date to today (midnight)
         Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY,0);
+        today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         today.set(Calendar.MILLISECOND, 0);
 
+        // Disable all dates before today
         calendarView.setMinDate(today.getTimeInMillis());
 
         Log.d(TAG, "Calendar minDate set to: " + today.getTime());
     }
 
     private void setupListeners() {
+        // Previous month button
         btnPrevMonth.setOnClickListener(v -> {
             calendar.add(Calendar.MONTH, -1);
             updateMonthLabel();
             calendarView.setDate(calendar.getTimeInMillis(), false, true);
         });
 
+        // Next month button
         btnNextMonth.setOnClickListener(v -> {
             calendar.add(Calendar.MONTH, 1);
             updateMonthLabel();
             calendarView.setDate(calendar.getTimeInMillis(), false, true);
         });
 
+        // Calendar date change listener
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateMonthLabel();
 
+            // Update selected date
             selectedDate = formatDateForFirebase(calendar.getTime());
 
+            // Reset selected time slot
             if (selectedTimeButton != null) {
                 setDefaultButtonStyle(selectedTimeButton);
                 selectedTimeButton = null;
                 selectedTimeSlot = null;
             }
 
+            // Load booked slots for new date
             loadBookedSlots(selectedDate);
         });
 
+        // Back button
         btnBack.setOnClickListener(v -> finish());
 
+        // Time slot click listener
         View.OnClickListener timeClickListener = v -> {
             Button clicked = (Button) v;
 
@@ -183,16 +210,17 @@ public class CalendarActivity extends AppCompatActivity {
                 return;
             }
 
+            // Reset old button
             if (selectedTimeButton != null) {
                 setDefaultButtonStyle(selectedTimeButton);
             }
 
+            // Set new button as selected
             setSelectedButtonStyle(clicked);
             selectedTimeButton = clicked;
             selectedTimeSlot = clicked.getText().toString();
 
             Log.d(TAG, "Selected time slot: " + selectedTimeSlot);
-            selectedTime = clicked.getText().toString();
         };
 
         btnTime1.setOnClickListener(timeClickListener);
@@ -200,33 +228,10 @@ public class CalendarActivity extends AppCompatActivity {
         btnTime3.setOnClickListener(timeClickListener);
         btnTime4.setOnClickListener(timeClickListener);
 
+        // Continue button
         btnContinue.setOnClickListener(v -> onContinueClicked());
-        btnContinue.setOnClickListener(v -> {
-            String address = etAddress.getText().toString().trim();
-            
-            if (selectedTime == null) {
-                Toast.makeText(this, "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (address.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String selectedDate = dateFormat.format(calendar.getTime());
-
-            Intent intent = new Intent(CalendarActivity.this, ChiTietDonDatActivity.class);
-            intent.putExtra("SERVICE_NAME", serviceName);
-            intent.putExtra("SERVICE_ID", serviceId);
-            intent.putExtra("SERVICE_PRICE", servicePrice);
-            intent.putExtra("SERVICE_IMAGE", serviceImage); // Pass Image URL
-            intent.putExtra("BOOKING_DATE", selectedDate);
-            intent.putExtra("BOOKING_TIME", selectedTime);
-            intent.putExtra("BOOKING_ADDRESS", address);
-            startActivity(intent);
-        });
-
+        // Calendar icon button
         btnCalendarIcon.setOnClickListener(v -> {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -241,11 +246,21 @@ public class CalendarActivity extends AppCompatActivity {
                         calendarView.setDate(calendar.getTimeInMillis(), false, true);
                         updateMonthLabel();
 
+                        // Update selected date and load slots
                         selectedDate = formatDateForFirebase(calendar.getTime());
                         loadBookedSlots(selectedDate);
                     },
                     year, month, day
             );
+
+            // IMPORTANT: Set minDate for DatePickerDialog too
+            Calendar today = Calendar.getInstance();
+            today.set(Calendar.HOUR_OF_DAY, 0);
+            today.set(Calendar.MINUTE, 0);
+            today.set(Calendar.SECOND, 0);
+            today.set(Calendar.MILLISECOND, 0);
+            datePickerDialog.getDatePicker().setMinDate(today.getTimeInMillis());
+
             datePickerDialog.show();
         });
     }
@@ -284,12 +299,14 @@ public class CalendarActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
+        // Reset all time slot buttons
         for (Button button : timeSlotButtons) {
             button.setEnabled(true);
             button.setAlpha(1.0f);
             setDefaultButtonStyle(button);
         }
 
+        // Convert date string to Timestamp for query
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Date dateObj = sdf.parse(date);
@@ -302,11 +319,13 @@ public class CalendarActivity extends AppCompatActivity {
 
             Timestamp startOfDay = new Timestamp(dateObj);
 
+            // Add 24 hours for end of day
             Calendar cal = Calendar.getInstance();
             cal.setTime(dateObj);
             cal.add(Calendar.DAY_OF_MONTH, 1);
             Timestamp endOfDay = new Timestamp(cal.getTime());
 
+            // Query bookings for this date and service
             db.collection("bookings")
                     .whereEqualTo("serviceId", serviceId)
                     .whereGreaterThanOrEqualTo("scheduleDate", startOfDay)
@@ -331,6 +350,7 @@ public class CalendarActivity extends AppCompatActivity {
 
                         Log.d(TAG, "Found " + bookedSlots.size() + " bookings for date: " + date);
 
+                        // Disable booked time slots
                         disableBookedTimeSlots();
                     })
                     .addOnFailureListener(e -> {
@@ -360,12 +380,14 @@ public class CalendarActivity extends AppCompatActivity {
 
             for (Button button : timeSlotButtons) {
                 if (button.getText().toString().equals(timeSlot)) {
-
+                    // Disable button
                     button.setEnabled(false);
                     button.setAlpha(0.3f);
 
+                    // Set disabled background
                     button.setBackgroundResource(R.drawable.time_button_bg_disabled);
 
+                    // If this was the selected button, clear selection
                     if (button == selectedTimeButton) {
                         selectedTimeButton = null;
                         selectedTimeSlot = null;
@@ -377,7 +399,7 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void onContinueClicked() {
-
+        // Validate inputs
         if (selectedDate == null || selectedDate.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn ngày", Toast.LENGTH_SHORT).show();
             return;
@@ -398,17 +420,20 @@ public class CalendarActivity extends AppCompatActivity {
             }
         }
 
+        // Check authentication
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this, "Vui lòng đăng nhập để đặt dịch vụ", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Show loading
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
         }
         btnContinue.setEnabled(false);
 
+        // Double-check slot availability and create booking
         checkAndCreateBooking(address, currentUser);
     }
 
@@ -433,6 +458,7 @@ public class CalendarActivity extends AppCompatActivity {
             cal.add(Calendar.DAY_OF_MONTH, 1);
             Timestamp endOfDay = new Timestamp(cal.getTime());
 
+            // Check if slot is still available
             db.collection("bookings")
                     .whereEqualTo("serviceId", serviceId)
                     .whereEqualTo("scheduleTime", selectedTimeSlot)
@@ -440,7 +466,7 @@ public class CalendarActivity extends AppCompatActivity {
                     .whereLessThan("scheduleDate", endOfDay)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-
+                        // Check if any booking is pending or confirmed
                         boolean slotTaken = false;
                         for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                             BookingItem existingBooking = doc.toObject(BookingItem.class);
@@ -451,10 +477,10 @@ public class CalendarActivity extends AppCompatActivity {
                         }
 
                         if (!slotTaken) {
-
+                            // Slot is still available, create booking
                             createBooking(address, user, scheduleTimestamp);
                         } else {
-
+                            // Slot was just booked
                             if (progressBar != null) {
                                 progressBar.setVisibility(View.GONE);
                             }
@@ -463,7 +489,7 @@ public class CalendarActivity extends AppCompatActivity {
                                     "Khung giờ này vừa được đặt. Vui lòng chọn khung giờ khác",
                                     Toast.LENGTH_LONG).show();
 
-
+                            // Reload available slots
                             loadBookedSlots(selectedDate);
                         }
                     })
@@ -487,17 +513,19 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void createBooking(String address, FirebaseUser user, Timestamp scheduleDate) {
-
+        // Prepare location map
         Map<String, Object> location = new HashMap<>();
         location.put("address", address);
         location.put("coordinates", null);
 
+        // Prepare customer info
         Map<String, Object> customerInfo = new HashMap<>();
         customerInfo.put("customerId", user.getUid());
         customerInfo.put("name", user.getDisplayName() != null ? user.getDisplayName() : "");
         customerInfo.put("email", user.getEmail() != null ? user.getEmail() : "");
         customerInfo.put("phone", user.getPhoneNumber() != null ? user.getPhoneNumber() : "");
 
+        // Prepare service info
         Map<String, Object> serviceInfo = new HashMap<>();
         if (serviceItem != null) {
             serviceInfo.put("serviceId", serviceItem.getServiceId());
@@ -506,11 +534,13 @@ public class CalendarActivity extends AppCompatActivity {
             serviceInfo.put("priceUnit", serviceItem.getPriceUnit());
             serviceInfo.put("duration", serviceItem.getDuration());
         } else {
+            // Use data from Intent if service not loaded
             serviceInfo.put("serviceId", serviceId);
             serviceInfo.put("title", serviceName != null ? serviceName : "");
             serviceInfo.put("price", 0);
         }
 
+        // Create booking data
         Map<String, Object> bookingData = new HashMap<>();
         bookingData.put("customerId", user.getUid());
         bookingData.put("serviceId", serviceId);
@@ -530,6 +560,7 @@ public class CalendarActivity extends AppCompatActivity {
         bookingData.put("updatedAt", Timestamp.now());
         bookingData.put("completedAt", null);
 
+        // Save to Firestore
         db.collection("bookings")
                 .add(bookingData)
                 .addOnSuccessListener(documentReference -> {
@@ -542,6 +573,7 @@ public class CalendarActivity extends AppCompatActivity {
 
                     Toast.makeText(this, "Đặt lịch thành công!", Toast.LENGTH_LONG).show();
 
+                    // Go to next screen
                     Intent intent = new Intent(CalendarActivity.this, PaymentMethodActivity.class);
                     intent.putExtra("bookingId", documentReference.getId());
                     startActivity(intent);

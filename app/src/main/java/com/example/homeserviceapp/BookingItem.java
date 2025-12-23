@@ -27,4 +27,5 @@ public class BookingItem {
     public String getTime() { return time; }
     public String getPrice() { return price; }
     public int getImageResId() { return imageResId; }
+
 }
