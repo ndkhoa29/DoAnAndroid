@@ -10,9 +10,9 @@
         android:background="#F5F5F5">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -24,118 +24,40 @@
                     android:id="@+id/btnBack"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_back"
-                    android:padding="8dp"
                     android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_back"
                     app:tint="#FFFFFF" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:text="Chi tiết dịch vụ"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
                     android:textColor="#FFFFFF"
-                    android:layout_centerInParent="true" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
-
-        <!-- Rating -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_star"/>
-
-            <TextView
-                android:id="@+id/tvRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4.7 (4.2k Đánh giá)"
-                android:textSize="14sp"
-                android:layout_marginStart="4dp"
-                android:textColor="#555" />
-        </LinearLayout>
-
-        <!-- Mô tả -->
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Biến ngôi nhà của bạn thành một nơi trú ẩn tinh tươm với dịch vụ dọn dẹp nhà chuyên nghiệp của chúng tôi..."
-            android:textSize="15sp"
-            android:textColor="#444"
-            android:maxLines="3"
-            android:ellipsize="end"/>
-
-        <TextView
-            android:id="@+id/tvReadMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Xem thêm"
-            android:textColor="#007AFF"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp"
-            android:visibility="gone" />
-
-        <!-- Service Provider -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="Nhà cung cấp dịch vụ"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="#000" />
-
-        <LinearLayout
-            android:id="@+id/providerSection"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:padding="8dp"
-            android:background="#FFFFFF"
-            android:elevation="2dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp"
-            android:clipToOutline="true">
-
-            <ImageView
-                android:id="@+id/imgProvider"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/profile"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="10dp"
-                android:background="@color/black" />
-
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/imgService"
                     android:layout_width="match_parent"
-                    android:layout_height="350dp"
+                    android:layout_height="250dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/office_cleaning" />
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="12dp">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tvTitle"
@@ -143,26 +65,26 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Dọn dẹp văn phòng"
-                        android:textStyle="bold"
+                        android:textColor="#000"
                         android:textSize="20sp"
-                        android:textColor="#000" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="75.000"
+                        android:text="75.000đ"
+                        android:textColor="#007AFF"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#007AFF" />
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="18dp"
@@ -174,18 +96,18 @@
                         android:id="@+id/tvAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="15 Trưng Nữ Vương, Hải Châu, Đà Nẵng"
-                        android:textSize="14sp"
                         android:layout_marginStart="6dp"
-                        android:textColor="#555" />
+                        android:text="15 Trưng Nữ Vương, Hải Châu, Đà Nẵng"
+                        android:textColor="#555"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="16dp"
@@ -197,10 +119,10 @@
                         android:id="@+id/tvRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4.7 (4.2k Đánh giá)"
-                        android:textSize="14sp"
                         android:layout_marginStart="4dp"
-                        android:textColor="#555" />
+                        android:text="4.7 (4.2k Đánh giá)"
+                        android:textColor="#555"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <TextView
@@ -209,92 +131,128 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="Biến ngôi nhà của bạn thành một nơi trú ẩn tinh tươm với dịch vụ dọn dẹp nhà chuyên nghiệp của chúng tôi..."
-                    android:textSize="15sp"
-                    android:textColor="#444" />
+                    android:textColor="#444"
+                    android:textSize="15sp" />
 
-                <!-- Service Provider -->
+                <TextView
+                    android:id="@+id/tvReadMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Xem thêm"
+                    android:textColor="#007AFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:text="Nhà cung cấp dịch vụ"
-                    android:textStyle="bold"
+                    android:textColor="#000"
                     android:textSize="16sp"
-                    android:textColor="#000" />
+                    android:textStyle="bold" />
 
                 <LinearLayout
-                    android:orientation="horizontal"
+                    android:id="@+id/providerSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:padding="12dp"
                     android:background="#FFFFFF"
                     android:elevation="2dp"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:id="@+id/imgProvider"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/profile"
                         android:scaleType="centerCrop"
-                        android:layout_marginEnd="10dp" />
+                        android:src="@drawable/profile" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tvProviderName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Nguyễn Văn A"
+                            android:textColor="#000"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="#000" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvProviderRole"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Người dọn nhà"
-                            android:textSize="14sp"
-                            android:textColor="#777" />
+                            android:textColor="#777"
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <ImageView
                         android:id="@+id/btnChat"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_chat"
+                        android:layout_marginEnd="8dp"
                         android:padding="4dp"
-                        app:tint="#007AFF"
-                        android:layout_marginEnd="8dp" />
+                        android:src="@drawable/ic_chat"
+                        app:tint="#007AFF" />
 
                     <ImageView
                         android:id="@+id/btnCall"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_call"
                         android:padding="4dp"
+                        android:src="@drawable/ic_call"
                         app:tint="#007AFF" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Đánh giá từ khách hàng"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <TextView
+                    android:id="@+id/tvNoReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:text="Chưa có đánh giá nào"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnBookNow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#007AFF"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="#1098ff"
+                    android:padding="12dp"
                     android:text="Đặt ngay"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:padding="14dp"
-                    android:layout_marginBottom="24dp" />
-            </LinearLayout>
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>
@@ -308,47 +266,3 @@
         android:visibility="gone" />
 
 </FrameLayout>
-        <!-- Reviews Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đánh giá từ khách hàng"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="12dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvReviews"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />
-
-        <TextView
-            android:id="@+id/tvNoReviews"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chưa có đánh giá nào"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:gravity="center"
-            android:padding="16dp"
-            android:visibility="gone" />
-
-        <!-- Nút đặt -->
-        <Button
-            android:id="@+id/btnBookNow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#1098ff"
-            android:text="Đặt ngay"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:padding="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp" />
-
-    </LinearLayout>
-    </LinearLayout>
-</ScrollView>

@@ -7,9 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.BookingViewHolder> {
 
@@ -32,25 +36,36 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.Bookin
         BookingItem booking = bookingList.get(position);
 
         holder.tvBookingId.setText(booking.getBookingId());
-        holder.tvBookingDate.setText(booking.getDate());
         holder.tvServiceName.setText(booking.getServiceName());
         holder.tvLocation.setText(booking.getLocation());
-        holder.tvTime.setText(booking.getTime());
         holder.tvPrice.setText(booking.getPrice());
+        holder.tvTime.setText(booking.getScheduleTime());
         holder.ivServiceImage.setImageResource(booking.getImageResId());
 
+        // 🔹 Format ngày từ Timestamp
+        if (booking.getScheduleDate() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            holder.tvBookingDate.setText(
+                    sdf.format(booking.getScheduleDate().toDate())
+            );
+        } else {
+            holder.tvBookingDate.setText("N/A");
+        }
+
+        // 🔹 Click xem chi tiết đơn
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ChiTietDonHangActivity.class);
             intent.putExtra("BOOKING_ID", booking.getBookingId());
             intent.putExtra("SERVICE_NAME", booking.getServiceName());
-            intent.putExtra("DATE", booking.getDate());
-            intent.putExtra("TIME", booking.getTime());
+            intent.putExtra("DATE", holder.tvBookingDate.getText().toString());
+            intent.putExtra("TIME", booking.getScheduleTime());
             intent.putExtra("LOCATION", booking.getLocation());
             intent.putExtra("PRICE", booking.getPrice());
             intent.putExtra("STATUS", "upcoming");
             v.getContext().startActivity(intent);
         });
 
+        // 🔹 Huỷ đơn (demo – sau này gắn Firebase)
         holder.btnCancelBooking.setOnClickListener(v -> {
             Toast.makeText(v.getContext(),
                     "Đã huỷ đơn: " + booking.getBookingId(),

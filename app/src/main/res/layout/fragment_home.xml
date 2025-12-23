@@ -29,7 +29,6 @@
                 android:layout_centerVertical="true"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -38,10 +37,6 @@
                     android:textSize="14sp"/>
 
                 <TextView
-                    android:id="@+id/tvUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
                     android:id="@+id/tvCustomerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,9 +44,6 @@
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
-
-
-
             </LinearLayout>
 
             <FrameLayout
@@ -61,11 +53,11 @@
                 android:layout_centerVertical="true">
 
                 <ImageView
+                    android:id="@+id/ivNotification"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_notification_icon"
                     android:padding="8dp"
-                    android:id="@+id/ivNotification"
                     android:src="@drawable/ic_notification"/>
 
                 <TextView
@@ -120,7 +112,6 @@
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_filter"/>
         </RelativeLayout>
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -158,7 +149,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <!-- Dot -->
                 <LinearLayout
                     android:id="@+id/dotsIndicator"
                     android:layout_width="wrap_content"
@@ -193,7 +183,6 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <!-- Danh mục-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,9 +197,9 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvAllCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvAllCategory"
                     android:layout_alignParentEnd="true"
                     android:text="Xem tất cả"
                     android:textColor="#2196F3"
@@ -223,7 +212,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- Dánh giá -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -238,16 +226,15 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvAllRated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvAllRated"
                     android:layout_alignParentEnd="true"
                     android:text="Xem tất cả"
                     android:textColor="#2196F3"
                     android:textSize="14sp"/>
             </RelativeLayout>
 
-            <!-- Danh gia scroll -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRatedServices"
                 android:layout_width="match_parent"
@@ -255,7 +242,6 @@
                 android:layout_marginBottom="24dp"
                 android:orientation="horizontal"/>
 
-            <!-- Phổ biến -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -270,23 +256,21 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvAllPopular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:id="@+id/tvAllPopular"
                     android:text="Xem tất cả"
                     android:textColor="#2196F3"
                     android:textSize="14sp"/>
             </RelativeLayout>
 
-            <!-- Phổ biến scroll -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPopularServices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:orientation="horizontal"/>
-
         </LinearLayout>
     </ScrollView>
 

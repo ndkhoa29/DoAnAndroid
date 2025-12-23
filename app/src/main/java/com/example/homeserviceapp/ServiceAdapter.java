@@ -7,13 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.homeserviceapp.models.ServiceItem;
+import com.example.homeserviceapp.models.Review;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
-import com.example.homeserviceapp.models.ServiceItem;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,14 +40,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     @Override
     public ServiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_service_card, parent, false);
-        
+
         if (isGrid) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
             layoutParams.setMarginEnd(0);
             view.setLayoutParams(layoutParams);
         }
-        
+
         return new ServiceViewHolder(view);
     }
 
@@ -51,102 +55,62 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     public void onBindViewHolder(@NonNull ServiceViewHolder holder, int position) {
         ServiceItem service = serviceList.get(position);
 
-        // Set service name
-        holder.tvTitle.setText(currentItem.getTitle());
-
-        // Set price with formatted price
-        String priceString = currentItem.getFormattedPrice();
-        holder.tvPrice.setText(priceString);
-
-        // Set rating
-        holder.tvRating.setText(String.format(Locale.US, "%.1f", currentItem.getRating()));
-
-        // Load image with Glide
-        String imageUrl = currentItem.getFirstImageUrl();
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_service)
-                    .error(R.drawable.placeholder_service)
-                    .into(holder.imgService);
-        } else {
-            holder.imgService.setImageResource(R.drawable.placeholder_service);
-        }
-
-        // QUAN TRỌNG: Click vào item để mở ServiceDetailActivity
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ServiceDetailActivity.class);
-
-            // Truyền serviceId (quan trọng nhất!)
-            intent.putExtra("serviceId", currentItem.getServiceId());
-            intent.putExtra("serviceName", currentItem.getTitle());
-            intent.putExtra("servicePrice", currentItem.getFormattedPrice());
-            // Có thể thêm thông tin khác nếu cần
-
-            context.startActivity(intent);
-        });
-
-        // Heart icon click - toggle favorite
-        holder.iconHeart.setOnClickListener(v -> {
-            // TODO: Implement add to favorites logic
-            Toast.makeText(context, "Đã thêm vào yêu thích: " + currentItem.getTitle(),
-                    Toast.LENGTH_SHORT).show();
+        // 1. Gán tên và giá
         holder.tvServiceName.setText(service.getTitle());
         holder.tvPrice.setText(service.getFormattedPrice());
 
+        // 2. Load Rating (Từ Firestore hoặc dùng rating có sẵn trong model)
         holder.tvRate.setText("...");
         calculateRating(service.getServiceId(), holder.tvRate);
 
+        // 3. Load ảnh bằng Glide
         String imageUrl = service.getFirstImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            String optimizedUrl = imageUrl;
-            if (imageUrl.contains("cloudinary.com")) {
-                optimizedUrl = com.example.homeserviceapp.helpers.CloudinaryHelper.getThumbnailUrl(imageUrl);
-            }
-
-            com.bumptech.glide.Glide.with(context)
-                .load(optimizedUrl)
-                .placeholder(R.drawable.ic_service_repo)
-                .error(R.drawable.ic_service_repo)
-                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
-                .into(holder.ivServiceImage);
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_service_repo)
+                    .error(R.drawable.ic_service_repo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.ivServiceImage);
         } else {
             holder.ivServiceImage.setImageResource(R.drawable.ic_service_repo);
         }
 
+        // 4. Click vào item mở chi tiết
         holder.itemView.setOnClickListener(v -> {
-             Intent intent = new Intent(context, ServiceDetailActivity.class);
-             intent.putExtra("SERVICE_ID", service.getServiceId());
-             context.startActivity(intent);
+            Intent intent = new Intent(context, ServiceDetailActivity.class);
+            // Thống nhất dùng key "SERVICE_ID" để bên Detail nhận cho đúng
+            intent.putExtra("SERVICE_ID", service.getServiceId());
+            context.startActivity(intent);
         });
     }
-    
+
     private void calculateRating(String serviceId, TextView tvRate) {
-        com.google.firebase.firestore.FirebaseFirestore.getInstance()
-            .collection("reviews")
-            .whereEqualTo("serviceId", serviceId)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                int count = queryDocumentSnapshots.size();
-                if (count == 0) {
-                    tvRate.setText("0.0");
-                    return;
-                }
-                
-                double totalRating = 0;
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
-                    if (review != null) {
-                        totalRating += review.getRating();
+        if (serviceId == null) return;
+
+        FirebaseFirestore.getInstance()
+                .collection("reviews")
+                .whereEqualTo("serviceId", serviceId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int count = queryDocumentSnapshots.size();
+                    if (count == 0) {
+                        tvRate.setText("0.0");
+                        return;
                     }
-                }
-                
-                double averageRating = totalRating / count;
-                tvRate.setText(String.format(Locale.getDefault(), "%.1f", averageRating));
-            })
-            .addOnFailureListener(e -> {
-                tvRate.setText("0.0");
-            });
+
+                    double totalRating = 0;
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Review review = doc.toObject(Review.class);
+                        if (review != null) {
+                            totalRating += review.getRating();
+                        }
+                    }
+
+                    double averageRating = totalRating / count;
+                    tvRate.setText(String.format(Locale.getDefault(), "%.1f", averageRating));
+                })
+                .addOnFailureListener(e -> tvRate.setText("0.0"));
     }
 
     @Override

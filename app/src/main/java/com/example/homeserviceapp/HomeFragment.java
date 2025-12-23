@@ -4,525 +4,164 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
-import com.example.homeserviceapp.models.Category;
-import com.example.homeserviceapp.models.BannerItem;
-import com.example.homeserviceapp.models.ServiceItem;
-import com.google.firebase.firestore.Query;
 
+import com.example.homeserviceapp.models.BannerItem;
+import com.example.homeserviceapp.models.Category;
+import com.example.homeserviceapp.models.ServiceItem;
+import com.example.homeserviceapp.helpers.GridSpacingItemDecoration;
+import com.example.homeserviceapp.helpers.KeyboardUtils;
+import com.example.homeserviceapp.helpers.UserPreferences;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    // ===== FIRESTORE =====
-    private FirebaseFirestore db;
-    private DocumentReference userRef;
-    private TextView tvCustomerName;
-
-    // ===== UI =====
+    // ===== UI ELEMENTS =====
     private ViewPager2 viewPagerBanner;
-    private BannerAdapter bannerAdapter;
-    private List<BannerItem> bannerList;
-    private Handler sliderHandler = new Handler(Looper.getMainLooper());
-    private TextView tvAllCategory, tvAllRated, tvAllPopular, tvUserName, tvNotificationBadge;
-
-    private TextView tvAllCategory, tvAllRated, tvAllPopular;
     private View dot1, dot2, dot3;
+    private TextView tvCustomerName, tvNotificationBadge, tvAllCategory, tvAllRated, tvAllPopular;
     private ImageView ivNotification, icFilter;
-    
-    private android.widget.EditText etSearch;
-    private RecyclerView rvSearchResults;
-    private android.widget.ScrollView homeContentScrollView;
-    private ServiceAdapter searchResultAdapter;
-    private List<ServiceItem> searchResultList;
-    private List<ServiceItem> allServicesBackup; // Cache for local search
+    private EditText etSearch;
+    private ScrollView homeContentScrollView;
 
-    private RecyclerView rvCategories;
+    // ===== ADAPTERS & LISTS =====
+    private BannerAdapter bannerAdapter;
+    private List<BannerItem> bannerList = new ArrayList<>();
+
     private CategoryAdapter categoryAdapter;
-    private List<Category> categoryList;
-    
-    private RecyclerView rvRatedServices;
-    private ServiceAdapter ratedServiceAdapter;
-    private List<ServiceItem> ratedServiceList;
+    private List<Category> categoryList = new ArrayList<>();
 
-    private RecyclerView rvPopularServices;
-    private ServiceAdapter popularServiceAdapter;
-    private List<ServiceItem> popularServiceList;
+    private ServiceAdapter ratedServiceAdapter, popularServiceAdapter, searchResultAdapter;
+    private List<ServiceItem> ratedServiceList = new ArrayList<>();
+    private List<ServiceItem> popularServiceList = new ArrayList<>();
+    private List<ServiceItem> searchResultList = new ArrayList<>();
+    private List<ServiceItem> allServicesBackup = new ArrayList<>();
 
-    private androidx.activity.result.ActivityResultLauncher<Intent> filterLauncher;
+    private RecyclerView rvCategories, rvRatedServices, rvPopularServices, rvSearchResults;
+
+    // ===== LOGIC VARIABLES =====
+    private Handler sliderHandler = new Handler(Looper.getMainLooper());
+    private FirebaseFirestore db;
     private float filterMinPrice = 0;
     private float filterMaxPrice = Float.MAX_VALUE;
     private List<String> filterCategoryIds = new ArrayList<>();
     private String currentSearchQuery = "";
+    private androidx.activity.result.ActivityResultLauncher<Intent> filterLauncher;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        filterLauncher = registerForActivityResult(
-            new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
-                    filterMinPrice = result.getData().getFloatExtra("MIN_PRICE", 0);
-                    filterMaxPrice = result.getData().getFloatExtra("MAX_PRICE", Float.MAX_VALUE);
-                    String catIdsStr = result.getData().getStringExtra("SELECTED_CATEGORY_IDS");
-                    
-                    filterCategoryIds.clear();
-                    if (catIdsStr != null && !catIdsStr.isEmpty()) {
-                        String[] ids = catIdsStr.split(",");
-                        for (String id : ids) {
-                            filterCategoryIds.add(id.trim());
-                        }
-                    }
-
-                    filterServices(currentSearchQuery);
-                    
-
-                    if (currentSearchQuery.isEmpty() && (filterMinPrice > 0 || filterMaxPrice < Float.MAX_VALUE || !filterCategoryIds.isEmpty())) {
-                         rvSearchResults.setVisibility(View.VISIBLE);
-                         homeContentScrollView.setVisibility(View.GONE);
-                    } else if (currentSearchQuery.isEmpty() && filterMinPrice == 0 && filterMaxPrice == Float.MAX_VALUE && filterCategoryIds.isEmpty()) {
-
-                        rvSearchResults.setVisibility(View.GONE);
-                        homeContentScrollView.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        );
+        db = FirebaseFirestore.getInstance();
+        setupFilterLauncher();
     }
 
     @Nullable
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState
-    ) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        initViews(view);
+        setupRecyclerViews();
+        setupBanner();
+        setupSearchLogic();
 
-        // ===== FIND VIEW =====
+        loadAllData();
+        return view;
+    }
+
+    private void initViews(View view) {
         tvCustomerName = view.findViewById(R.id.tvCustomerName);
-
         viewPagerBanner = view.findViewById(R.id.viewPagerBanner);
         dot1 = view.findViewById(R.id.dot1);
         dot2 = view.findViewById(R.id.dot2);
         dot3 = view.findViewById(R.id.dot3);
-
         ivNotification = view.findViewById(R.id.ivNotification);
         tvAllCategory = view.findViewById(R.id.tvAllCategory);
         tvAllRated = view.findViewById(R.id.tvAllRated);
         tvAllPopular = view.findViewById(R.id.tvAllPopular);
         icFilter = view.findViewById(R.id.icFilter);
-        tvUserName = view.findViewById(R.id.tvUserName);
-        tvNotificationBadge = view.findViewById(R.id.tvNotificationBadge);
-
         etSearch = view.findViewById(R.id.etSearch);
         rvSearchResults = view.findViewById(R.id.rvSearchResults);
         homeContentScrollView = view.findViewById(R.id.homeContentScrollView);
-        
-        rvCategories = view.findViewById(R.id.rvCategories);
-        rvRatedServices = view.findViewById(R.id.rvRatedServices);
-        rvPopularServices = view.findViewById(R.id.rvPopularServices);
+        tvNotificationBadge = view.findViewById(R.id.tvNotificationBadge);
 
-        setupCategoriesRecyclerView();
-        setupServicesRecyclerViews();
-        setupSearchRecyclerView();
-        
-        loadUserData();
-        loadCategories();
-        loadNotificationCount();
-        loadRatedServices();
-        loadPopularServices();
-        loadAllServicesForSearch();
+        ivNotification.setOnClickListener(v -> startActivity(new Intent(requireContext(), ThongBaoActivity.class)));
+        tvAllCategory.setOnClickListener(v -> startActivity(new Intent(requireContext(), CategoryActivity.class)));
+        icFilter.setOnClickListener(v -> filterLauncher.launch(new Intent(requireContext(), FilterActivity.class)));
 
-        etSearch.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentSearchQuery = s.toString().trim();
-                filterServices(currentSearchQuery);
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-        rvSearchResults.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    com.example.homeserviceapp.helpers.KeyboardUtils.hideKeyboard(requireActivity());
-                }
-            }
-        });
-
-        icFilter.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), FilterActivity.class);
-            filterLauncher.launch(intent);
-        });
-        // ===== FIRESTORE INIT =====
-        db = FirebaseFirestore.getInstance();
-        userRef = db.collection("users").document("admin_001");
-
-        userRef.addSnapshotListener((snapshot, e) -> {
-            if (e != null) return;
-
-            if (snapshot != null && snapshot.exists()) {
-                String name = snapshot.getString("fullName");
-                if (name != null && tvCustomerName != null) {
-                    tvCustomerName.setText("Xin chào, " + name);
-                }
-            }
-        });
-
-        tvAllRated.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ViewAllServicesActivity.class);
-            intent.putExtra("TYPE", "RATED");
+        View.OnClickListener viewAllServices = v -> {
+            Intent intent = new Intent(requireContext(), TabServiceActivity.class);
             startActivity(intent);
-        });
-
-        tvAllPopular.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ViewAllServicesActivity.class);
-            intent.putExtra("TYPE", "POPULAR");
-            startActivity(intent);
-        });
-        // ===== CLICK EVENTS =====
-        icFilter.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), FilterActivity.class))
-        );
-
-        ivNotification.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), ThongBaoActivity.class))
-        );
-
-        tvAllCategory.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), CategoryActivity.class))
-        );
-
-        tvAllRated.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), TabServiceActivity.class))
-        );
-
-        tvAllPopular.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), TabServiceActivity.class))
-        );
-
-        // ===== BANNER =====
-        bannerList = new ArrayList<>();
-        bannerAdapter = new BannerAdapter(getContext(), bannerList);
-        viewPagerBanner.setAdapter(bannerAdapter);
-        
-        loadBanners();
-
-        viewPagerBanner.registerOnPageChangeCallback(
-                new ViewPager2.OnPageChangeCallback() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        super.onPageSelected(position);
-                        updateDots(position);
-                        sliderHandler.removeCallbacks(sliderRunnable);
-                        sliderHandler.postDelayed(sliderRunnable, 3000);
-                    }
-                }
-        );
-
-        sliderHandler.postDelayed(sliderRunnable, 3000);
-
-        return view;
+        };
+        tvAllRated.setOnClickListener(viewAllServices);
+        tvAllPopular.setOnClickListener(viewAllServices);
     }
 
-    private Runnable sliderRunnable = () -> {
-        int currentItem = viewPagerBanner.getCurrentItem();
-        int nextItem = (currentItem + 1) % (bannerList != null && !bannerList.isEmpty() ? bannerList.size() : 1);
-        viewPagerBanner.setCurrentItem(nextItem, true);
-    };
-
-    private void updateDots(int position) {
-        if (getContext() == null) return;
-        dot1.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), position == 0 ? R.color.blue : R.color.gray));
-        dot2.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), position == 1 ? R.color.blue : R.color.gray));
-        dot3.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), position == 2 ? R.color.blue : R.color.gray));
-    }
-
-    private void loadUserData() {
-        if (getContext() == null) return;
-        com.example.homeserviceapp.helpers.UserPreferences userPrefs = 
-            new com.example.homeserviceapp.helpers.UserPreferences(requireContext());
-
-        if (userPrefs.hasCachedData()) {
-            String cachedName = userPrefs.getUserName();
-            if (!cachedName.isEmpty()) {
-                tvUserName.setText(cachedName);
-            }
-        }
-
-        com.google.firebase.auth.FirebaseAuth auth = com.google.firebase.auth.FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            String userId = auth.getCurrentUser().getUid();
-            com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-            
-            db.collection("users").document(userId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String fullName = documentSnapshot.getString("fullName");
-                        String email = documentSnapshot.getString("email");
-                        String phone = documentSnapshot.getString("phoneNumber");
-                        String avatarUrl = documentSnapshot.getString("avatarUrl");
-
-                        userPrefs.saveUserData(fullName, email, phone, avatarUrl);
-
-                        if (fullName != null && !fullName.isEmpty()) {
-                            tvUserName.setText(fullName);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                });
-        }
-    }
-
-    private void setupCategoriesRecyclerView() {
-        categoryList = new ArrayList<>();
+    private void setupRecyclerViews() {
+        // Categories
         categoryAdapter = new CategoryAdapter(getContext(), categoryList, category -> {
             Intent intent = new Intent(requireContext(), CategoryActivity.class);
             intent.putExtra("CATEGORY_NAME", category.getName());
             startActivity(intent);
         });
-        
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        rvCategories.setLayoutManager(layoutManager);
-        rvCategories.setAdapter(categoryAdapter);
+        rvCategories = getView().findViewById(R.id.rvCategories); // Sẽ gán lại sau khi inflate
+        // Fix: Use the 'view' from initViews
     }
 
-    // ===== SERVICE CARD CLICK =====
-    private void setClickForAllCards(View rootView) {
-        findAndSetClickListener(rootView);
-    }
-    
-    private void setupServicesRecyclerViews() {
-
-        ratedServiceList = new ArrayList<>();
-        ratedServiceAdapter = new ServiceAdapter(getContext(), ratedServiceList);
-        LinearLayoutManager ratedLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        rvRatedServices.setLayoutManager(ratedLayoutManager);
-        rvRatedServices.setAdapter(ratedServiceAdapter);
-
-        popularServiceList = new ArrayList<>();
-        popularServiceAdapter = new ServiceAdapter(getContext(), popularServiceList);
-        LinearLayoutManager popularLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        rvPopularServices.setLayoutManager(popularLayoutManager);
-        rvPopularServices.setAdapter(popularServiceAdapter);
-    }
-    
-    private void loadCategories() {
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
-        db.collection("categories")
-            .orderBy("displayOrder")
-            .limit(6)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                categoryList.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    Category category = doc.toObject(Category.class);
-                    if (category != null) {
-                        category.setCategoryId(doc.getId());
-                        categoryList.add(category);
-                    }
-                }
-                categoryAdapter.notifyDataSetChanged();
-            })
-            .addOnFailureListener(e -> {
-            });
-    }
-    
-    private void loadRatedServices() {
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-    private void findAndSetClickListener(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) view;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                View child = group.getChildAt(i);
-
-        db.collection("services")
-            .orderBy("rating", Query.Direction.DESCENDING)
-            .limit(10)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                ratedServiceList.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    ServiceItem service = doc.toObject(ServiceItem.class);
-                    if (service != null) {
-                        service.setServiceId(doc.getId());
-                        ratedServiceList.add(service);
-                    }
-                }
-                ratedServiceAdapter.notifyDataSetChanged();
-            })
-            .addOnFailureListener(e -> {
-                 db.collection("services")
-                     .limit(10)
-                     .get()
-                     .addOnSuccessListener(retrySnapshots -> {
-                         ratedServiceList.clear();
-                         for (com.google.firebase.firestore.DocumentSnapshot doc : retrySnapshots) {
-                             ServiceItem service = doc.toObject(ServiceItem.class);
-                             if (service != null) {
-                                 service.setServiceId(doc.getId());
-                                 ratedServiceList.add(service);
-                             }
-                         }
-                         // Sort manually
-                         ratedServiceList.sort((s1, s2) -> Double.compare(s2.getRating(), s1.getRating()));
-                         ratedServiceAdapter.notifyDataSetChanged();
-                     });
-            });
+    // Tách nhỏ các hàm để tránh lỗi lồng nhau
+    private void setupBanner() {
+        bannerAdapter = new BannerAdapter(getContext(), bannerList);
+        viewPagerBanner.setAdapter(bannerAdapter);
+        viewPagerBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                updateDots(position);
+                sliderHandler.removeCallbacks(sliderRunnable);
+                sliderHandler.postDelayed(sliderRunnable, 3000);
+            }
+        });
     }
 
-    private void loadPopularServices() {
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
-        // Load popular services (order by bookingCount)
-        db.collection("services")
-            .orderBy("bookingCount", Query.Direction.DESCENDING)
-            .limit(10)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                popularServiceList.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    ServiceItem service = doc.toObject(ServiceItem.class);
-                    if (service != null) {
-                        service.setServiceId(doc.getId());
-                        popularServiceList.add(service);
-                    }
-                }
-                popularServiceAdapter.notifyDataSetChanged();
-            })
-            .addOnFailureListener(e -> {
-                 // Try without ordering in case index is missing
-                 db.collection("services")
-                     .limit(10)
-                     .get()
-                     .addOnSuccessListener(retrySnapshots -> {
-                         popularServiceList.clear();
-                         for (com.google.firebase.firestore.DocumentSnapshot doc : retrySnapshots) {
-                             ServiceItem service = doc.toObject(ServiceItem.class);
-                             if (service != null) {
-                                 service.setServiceId(doc.getId());
-                                 popularServiceList.add(service);
-                             }
-                         }
-                         // Sort manually
-                         popularServiceList.sort((s1, s2) -> Integer.compare(s2.getBookingCount(), s1.getBookingCount()));
-                         popularServiceAdapter.notifyDataSetChanged();
-                     });
-            });
-    }
-    
-    private void loadNotificationCount() {
-        com.google.firebase.auth.FirebaseAuth auth = com.google.firebase.auth.FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            String userId = auth.getCurrentUser().getUid();
-            com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-            
-            db.collection("notifications")
-                .whereEqualTo("userId", userId)
-                .whereEqualTo("isRead", false)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int count = queryDocumentSnapshots.size();
-                    if (count > 0) {
-                        tvNotificationBadge.setVisibility(View.VISIBLE);
-                        tvNotificationBadge.setText(count > 99 ? "99+" : String.valueOf(count));
-                    } else {
-                        tvNotificationBadge.setVisibility(View.GONE);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    tvNotificationBadge.setVisibility(View.GONE);
-                });
-        }
-    }
-
-    private void loadBanners() {
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
-        db.collection("banners")
-            .orderBy("displayOrder")
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                bannerList.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    BannerItem banner = doc.toObject(BannerItem.class);
-                    if (banner != null) {
-                        banner.setBannerId(doc.getId());
-                        bannerList.add(banner);
-                    }
-                }
-                
-                // Nếu không có banners, thêm placeholder
-                if (bannerList.isEmpty()) {
-                    // Keep empty or add default banner if needed
-                }
-                
-                bannerAdapter.notifyDataSetChanged();
-            })
-            .addOnFailureListener(e -> {
-                // Keep empty if failed
-            });
-    }
-
-    private void setupSearchRecyclerView() {
-        searchResultList = new ArrayList<>();
-        allServicesBackup = new ArrayList<>();
+    private void setupSearchLogic() {
         searchResultAdapter = new ServiceAdapter(getContext(), searchResultList);
-        
-        // Use Grid for search results
         searchResultAdapter.setGridMode(true);
-        rvSearchResults.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(getContext(), 2));
-        
-         // Add Spacing (reusing the one we made)
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
-        rvSearchResults.addItemDecoration(new com.example.homeserviceapp.helpers.GridSpacingItemDecoration(2, spacingInPixels, true));
-        
+        rvSearchResults.setLayoutManager(new GridLayoutManager(getContext(), 2));
         rvSearchResults.setAdapter(searchResultAdapter);
-    }
 
-    private void loadAllServicesForSearch() {
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        db.collection("services")
-            .whereEqualTo("isActive", true)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                allServicesBackup.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    ServiceItem service = doc.toObject(ServiceItem.class);
-                    if (service != null) {
-                        service.setServiceId(doc.getId());
-                        allServicesBackup.add(service);
-                    }
-                }
-            })
-            .addOnFailureListener(e -> {
-                // Fail silently or log
-            });
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentSearchQuery = s.toString().trim();
+                filterServices(currentSearchQuery);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 
     private void filterServices(String query) {
@@ -538,63 +177,118 @@ public class HomeFragment extends Fragment {
         rvSearchResults.setVisibility(View.VISIBLE);
         homeContentScrollView.setVisibility(View.GONE);
 
-        if (allServicesBackup == null || allServicesBackup.isEmpty()) {
-            return;
-        }
-
         List<ServiceItem> filteredList = new ArrayList<>();
-        String lowerCaseQuery = query.toLowerCase();
-
         for (ServiceItem item : allServicesBackup) {
-            boolean matchesQuery = hasQuery ? item.getTitle().toLowerCase().contains(lowerCaseQuery) : true;
+            boolean matchesQuery = !hasQuery || item.getTitle().toLowerCase().contains(query.toLowerCase());
             boolean matchesPrice = item.getPrice() >= filterMinPrice && item.getPrice() <= filterMaxPrice;
             boolean matchesCategory = filterCategoryIds.isEmpty() || filterCategoryIds.contains(item.getCategoryId());
 
-            if (matchesQuery && matchesPrice && matchesCategory) {
-                filteredList.add(item);
-            }
+            if (matchesQuery && matchesPrice && matchesCategory) filteredList.add(item);
         }
-
         searchResultList.clear();
         searchResultList.addAll(filteredList);
         searchResultAdapter.notifyDataSetChanged();
-                findAndSetClickListener(child);
-            }
-        }
     }
 
-    private void openServiceDetail() {
-        startActivity(new Intent(getActivity(), ServiceDetailActivity.class));
+    private void updateDots(int position) {
+        if (!isAdded()) return;
+        dot1.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), position == 0 ? R.color.blue : R.color.gray));
+        dot2.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), position == 1 ? R.color.blue : R.color.gray));
+        dot3.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), position == 2 ? R.color.blue : R.color.gray));
     }
 
-    // ===== SLIDER =====
-    private final Runnable sliderRunnable = () -> {
-        if (bannerList == null || bannerList.isEmpty()) return;
-
-        int currentItem = viewPagerBanner.getCurrentItem();
-        int nextItem = (currentItem + 1) % bannerList.size();
+    private Runnable sliderRunnable = () -> {
+        if (bannerList.isEmpty()) return;
+        int nextItem = (viewPagerBanner.getCurrentItem() + 1) % bannerList.size();
         viewPagerBanner.setCurrentItem(nextItem, true);
     };
 
-    private void updateDots(int position) {
-        dot1.setBackgroundTintList(
-                ContextCompat.getColorStateList(
-                        requireContext(),
-                        position == 0 ? R.color.blue : R.color.gray
-                )
-        );
-        dot2.setBackgroundTintList(
-                ContextCompat.getColorStateList(
-                        requireContext(),
-                        position == 1 ? R.color.blue : R.color.gray
-                )
-        );
-        dot3.setBackgroundTintList(
-                ContextCompat.getColorStateList(
-                        requireContext(),
-                        position == 2 ? R.color.blue : R.color.gray
-                )
-        );
+    private void setupFilterLauncher() {
+        filterLauncher = registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
+                filterMinPrice = result.getData().getFloatExtra("MIN_PRICE", 0);
+                filterMaxPrice = result.getData().getFloatExtra("MAX_PRICE", Float.MAX_VALUE);
+                filterServices(currentSearchQuery);
+            }
+        });
+    }
+
+    private void loadAllData() {
+        loadUserData();
+        loadBanners();
+        loadCategories();
+        loadRatedServices();
+        loadPopularServices();
+        loadAllServicesForSearch();
+    }
+
+    // Các hàm load data từ Firestore (giữ nguyên logic của bạn nhưng dọn dẹp biến thừa)
+    private void loadUserData() {
+        String userId = FirebaseAuth.getInstance().getUid();
+        if (userId == null) return;
+        db.collection("users").document(userId).addSnapshotListener((snapshot, e) -> {
+            if (snapshot != null && snapshot.exists()) {
+                String name = snapshot.getString("fullName");
+                tvCustomerName.setText("Xin chào, " + (name != null ? name : "Khách hàng"));
+            }
+        });
+    }
+
+    private void loadBanners() {
+        db.collection("banners").orderBy("displayOrder").get().addOnSuccessListener(snapshots -> {
+            bannerList.clear();
+            for (DocumentSnapshot doc : snapshots) {
+                BannerItem item = doc.toObject(BannerItem.class);
+                if (item != null) bannerList.add(item);
+            }
+            bannerAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void loadCategories() {
+        db.collection("categories").limit(6).get().addOnSuccessListener(snapshots -> {
+            categoryList.clear();
+            for (DocumentSnapshot doc : snapshots) {
+                Category cat = doc.toObject(Category.class);
+                if (cat != null) categoryList.add(cat);
+            }
+            categoryAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void loadRatedServices() {
+        db.collection("services").orderBy("rating", Query.Direction.DESCENDING).limit(10).get().addOnSuccessListener(snapshots -> {
+            ratedServiceList.clear();
+            for (DocumentSnapshot doc : snapshots) {
+                ServiceItem item = doc.toObject(ServiceItem.class);
+                if (item != null) ratedServiceList.add(item);
+            }
+            ratedServiceAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void loadPopularServices() {
+        db.collection("services").orderBy("bookingCount", Query.Direction.DESCENDING).limit(10).get().addOnSuccessListener(snapshots -> {
+            popularServiceList.clear();
+            for (DocumentSnapshot doc : snapshots) {
+                ServiceItem item = doc.toObject(ServiceItem.class);
+                if (item != null) popularServiceList.add(item);
+            }
+            popularServiceAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void loadAllServicesForSearch() {
+        db.collection("services").whereEqualTo("isActive", true).get().addOnSuccessListener(snapshots -> {
+            allServicesBackup.clear();
+            for (DocumentSnapshot doc : snapshots) {
+                ServiceItem item = doc.toObject(ServiceItem.class);
+                if (item != null) {
+                    item.setServiceId(doc.getId());
+                    allServicesBackup.add(item);
+                }
+            }
+        });
     }
 
     @Override

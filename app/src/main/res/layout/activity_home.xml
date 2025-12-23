@@ -92,9 +92,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="abc"
+                        android:text="---"
                         android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
 
                     <View
                         android:layout_width="match_parent"
@@ -111,11 +113,14 @@
                     android:paddingBottom="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvEmail"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Email"
-                        android:textColor="#999999"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="8dp"
+                        android:text="---"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+
 
                     <TextView
                         android:id="@+id/tvEmail"
@@ -141,11 +146,14 @@
                     android:paddingBottom="8dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvPhone"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Số điện thoại"
-                        android:textColor="#999999"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="8dp"
+                        android:text="---"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+
 
                     <TextView
                         android:id="@+id/tvPhone"

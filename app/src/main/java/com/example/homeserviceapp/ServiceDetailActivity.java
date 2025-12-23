@@ -12,75 +12,64 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.homeserviceapp.models.Review;
+import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
-    ImageView btnChat, btnCall, btnBack, imgService;
-    TextView tvTitle, tvPrice, tvRating, tvDescription, tvProviderName, tvReadMore, tvNoReviews;
-    Button btnBookNow;
-    LinearLayout providerSection;
-    androidx.recyclerview.widget.RecyclerView rvReviews;
-    ReviewAdapter reviewAdapter;
-    java.util.List<com.example.homeserviceapp.models.Review> reviewList;
-    
+    // Views
+    private ImageView btnChat, btnCall, btnBack, imgService;
+    private TextView tvTitle, tvPrice, tvRating, tvDescription,
+            tvProviderName, tvReadMore, tvNoReviews;
+    private Button btnBookNow;
+    private LinearLayout providerSection;
+    private RecyclerView rvReviews;
+
+    // Data
     private FirebaseFirestore db;
     private String serviceId;
     private ServiceItem currentService;
 
-    private String serviceId;
-    private String serviceName;
-    private String servicePrice;
-    private String providerName;
+    private ReviewAdapter reviewAdapter;
+    private List<Review> reviewList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_detail);
 
-        serviceId = getIntent().getStringExtra("serviceId");
-        serviceName = getIntent().getStringExtra("serviceName");
-        servicePrice = getIntent().getStringExtra("servicePrice");
-        providerName = getIntent().getStringExtra("providerName");
-
+        // LẤY SERVICE ID
+        serviceId = getIntent().getStringExtra("service_id");
         if (serviceId == null || serviceId.isEmpty()) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy dịch vụ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy dịch vụ", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        db = FirebaseFirestore.getInstance();
-        serviceId = getIntent().getStringExtra("SERVICE_ID");
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Chi tiết dịch vụ");
-        }
+        db = FirebaseFirestore.getInstance();
 
         initViews();
         setupListeners();
-        
-        if (serviceId != null) {
-            loadServiceData();
-        } else {
-            Toast.makeText(this, "Không tìm thấy dịch vụ", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        loadServiceData();
     }
-    
+
     private void initViews() {
         btnChat = findViewById(R.id.btnChat);
         btnCall = findViewById(R.id.btnCall);
-        btnBookNow = findViewById(R.id.btnBookNow);
         btnBack = findViewById(R.id.btnBack);
-
-        btnBack.setOnClickListener(v -> finish());
+        btnBookNow = findViewById(R.id.btnBookNow);
 
         imgService = findViewById(R.id.imgService);
         tvTitle = findViewById(R.id.tvTitle);
@@ -88,102 +77,89 @@ public class ServiceDetailActivity extends AppCompatActivity {
         tvRating = findViewById(R.id.tvRating);
         tvDescription = findViewById(R.id.tvDescription);
         tvProviderName = findViewById(R.id.tvProviderName);
-        providerSection = findViewById(R.id.providerSection);
-        
         tvReadMore = findViewById(R.id.tvReadMore);
-        
-        btnChat.setVisibility(View.VISIBLE);
-        btnCall.setVisibility(View.VISIBLE);
-        btnBookNow.setVisibility(View.VISIBLE);
-        
-        rvReviews = findViewById(R.id.rvReviews);
         tvNoReviews = findViewById(R.id.tvNoReviews);
-        rvReviews.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
+
+        providerSection = findViewById(R.id.providerSection);
+
+        rvReviews = findViewById(R.id.rvReviews);
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+
+        reviewList = new ArrayList<>();
+        reviewAdapter = new ReviewAdapter(this, reviewList);
+        rvReviews.setAdapter(reviewAdapter);
     }
-    
+
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
-        
-        btnChat.setOnClickListener(v -> {
-            Intent intent = new Intent(ServiceDetailActivity.this, ChatActivity.class);
-            startActivity(intent);
-        });
+
+        btnChat.setOnClickListener(v ->
+                startActivity(new Intent(this, ChatActivity.class))
+        );
 
         btnCall.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:+1800123456"));
+            intent.setData(Uri.parse("tel:0123456789"));
             startActivity(intent);
         });
 
         btnBookNow.setOnClickListener(v -> {
-            try {
-                Log.d("ServiceDetail", "Bắt đầu chuyển sang CalendarActivity");
-
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (currentUser == null) {
-                    Toast.makeText(ServiceDetailActivity.this,
-                            "Vui lòng đăng nhập để đặt dịch vụ",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
-
-                intent.putExtra("serviceId", serviceId);
-                intent.putExtra("service_name", serviceName != null ? serviceName : "Dịch vụ");
-                intent.putExtra("service_price", servicePrice != null ? servicePrice : "0");
-                intent.putExtra("provider_name", providerName != null ? providerName : "");
-
-                Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
-                if (currentService != null) {
-                    intent.putExtra("service_id", serviceId);
-                    intent.putExtra("service_name", currentService.getTitle());
-                    intent.putExtra("service_price", String.valueOf(currentService.getPrice()));
-                    
-                    if (currentService.getImageUrls() != null && !currentService.getImageUrls().isEmpty()) {
-                        intent.putExtra("service_image", currentService.getImageUrls().get(0));
-                    }
-                }
-                startActivity(intent);
-                Log.d("ServiceDetail", "Đã gọi startActivity");
-            } catch (Exception e) {
-                Log.e("ServiceDetail", "Lỗi: " + e.getMessage());
-                Toast.makeText(ServiceDetailActivity.this,
-                        "Lỗi: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                Toast.makeText(this, "Vui lòng đăng nhập để đặt dịch vụ", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            if (currentService == null) {
+                Toast.makeText(this, "Dữ liệu dịch vụ chưa sẵn sàng", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(this, CalendarActivity.class);
+            intent.putExtra("service_id", serviceId);
+            intent.putExtra("service_name", currentService.getTitle());
+            intent.putExtra("service_price", currentService.getFormattedPrice());
+
+            if (currentService.getImageUrls() != null
+                    && !currentService.getImageUrls().isEmpty()) {
+                intent.putExtra("service_image",
+                        currentService.getImageUrls().get(0));
+            }
+
+            startActivity(intent);
         });
     }
-    
+
     private void loadServiceData() {
-        db.collection("services").document(serviceId).get()
-            .addOnSuccessListener(documentSnapshot -> {
-                currentService = documentSnapshot.toObject(ServiceItem.class);
-                if (currentService != null) {
+        db.collection("services")
+                .document(serviceId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    currentService = doc.toObject(ServiceItem.class);
+                    if (currentService == null) {
+                        Toast.makeText(this, "Không tìm thấy dữ liệu dịch vụ", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
                     displayServiceData();
-                } else {
-                    Toast.makeText(this, "Không tìm thấy dữ liệu dịch vụ", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi tải dữ liệu", Toast.LENGTH_SHORT).show();
                     finish();
-                }
-            })
-            .addOnFailureListener(e -> {
-                Toast.makeText(this, "Lỗi tải dữ liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                finish();
-            });
+                });
     }
-    
+
     private void displayServiceData() {
         tvTitle.setText(currentService.getTitle());
         tvPrice.setText(currentService.getFormattedPrice());
-        
-        String desc = currentService.getDescription();
-        tvDescription.setText(desc);
-        
-        tvReadMore.setVisibility(View.GONE);
+        tvDescription.setText(currentService.getDescription());
+
+        // Read more
         tvDescription.setMaxLines(3);
-        
+        tvReadMore.setVisibility(View.GONE);
+
         tvDescription.post(() -> {
-            if (tvDescription.getLineCount() > 3 || (desc != null && desc.length() > 100)) {
+            if (tvDescription.getLineCount() > 3) {
                 tvReadMore.setVisibility(View.VISIBLE);
                 tvReadMore.setOnClickListener(v -> {
                     if (tvReadMore.getText().toString().equals("Xem thêm")) {
@@ -196,104 +172,69 @@ public class ServiceDetailActivity extends AppCompatActivity {
                 });
             }
         });
-        
-        tvRating.setText("Đang tải...");
-        
-        if (currentService.getImageUrls() != null && !currentService.getImageUrls().isEmpty()) {
-            com.bumptech.glide.Glide.with(this)
-                .load(currentService.getImageUrls().get(0))
-                .into(imgService);
+
+        // Image
+        if (currentService.getImageUrls() != null
+                && !currentService.getImageUrls().isEmpty()) {
+            Glide.with(this)
+                    .load(currentService.getImageUrls().get(0))
+                    .into(imgService);
         }
-        
+
+        tvProviderName.setText("Service Center AZ");
         providerSection.setVisibility(View.VISIBLE);
-        
-        String providerName = "Service Center AZ"; 
-        
-        tvProviderName.setText(providerName);
-        
-        btnChat.setVisibility(View.VISIBLE);
-        btnCall.setVisibility(View.VISIBLE);
-        
+
         loadReviews();
-        
-        calculateAndDisplayRating();
+        calculateRating();
     }
-    
+
     private void loadReviews() {
-        reviewList = new java.util.ArrayList<>();
-        reviewAdapter = new ReviewAdapter(this, reviewList);
-        rvReviews.setAdapter(reviewAdapter);
-        
-        Log.d("ServiceDetail", "Loading reviews for serviceId: " + serviceId);
-        
         db.collection("reviews")
-            .whereEqualTo("serviceId", serviceId)
-            .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .limit(50)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                Log.d("ServiceDetail", "Query success, found " + queryDocumentSnapshots.size() + " reviews");
-                reviewList.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
-                    if (review != null) {
-                        reviewList.add(review);
-                        Log.d("ServiceDetail", "Added review: " + review.getComment());
+                .whereEqualTo("serviceId", serviceId)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(50)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    reviewList.clear();
+                    for (var doc : snapshot.getDocuments()) {
+                        Review r = doc.toObject(Review.class);
+                        if (r != null) reviewList.add(r);
                     }
-                }
-                
 
-                
-                if (reviewList.isEmpty()) {
-                    Log.d("ServiceDetail", "No reviews found, showing empty state");
-                    rvReviews.setVisibility(android.view.View.GONE);
-                    tvNoReviews.setVisibility(android.view.View.VISIBLE);
-                } else {
-                    Log.d("ServiceDetail", "Showing " + reviewList.size() + " reviews");
-                    rvReviews.setVisibility(android.view.View.VISIBLE);
-                    tvNoReviews.setVisibility(android.view.View.GONE);
-                }
-                
-                reviewAdapter.notifyDataSetChanged();
-            })
-            .addOnFailureListener(e -> {
-                Log.e("ServiceDetail", "Error loading reviews: " + e.getMessage());
-                tvNoReviews.setVisibility(android.view.View.VISIBLE);
-                rvReviews.setVisibility(android.view.View.GONE);
-                Toast.makeText(this, "Lỗi tải đánh giá: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            });
-    }
-    
-    private void calculateAndDisplayRating() {
-        db.collection("reviews")
-            .whereEqualTo("serviceId", serviceId)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                int count = queryDocumentSnapshots.size();
-                if (count == 0) {
-                    tvRating.setText("Chưa có đánh giá");
-                    return;
-                }
-                
-                double totalRating = 0;
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
-                    if (review != null) {
-                        totalRating += review.getRating();
+                    if (reviewList.isEmpty()) {
+                        rvReviews.setVisibility(View.GONE);
+                        tvNoReviews.setVisibility(View.VISIBLE);
+                    } else {
+                        rvReviews.setVisibility(View.VISIBLE);
+                        tvNoReviews.setVisibility(View.GONE);
                     }
-                }
-                
-                double averageRating = totalRating / count;
-                tvRating.setText(String.format(Locale.getDefault(), "%.1f (%d Đánh giá)", averageRating, count));
-            })
-            .addOnFailureListener(e -> {
-                tvRating.setText("5.0 (0 Đánh giá)");
-            });
+
+                    reviewAdapter.notifyDataSetChanged();
+                });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+    private void calculateRating() {
+        db.collection("reviews")
+                .whereEqualTo("serviceId", serviceId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    int count = snapshot.size();
+                    if (count == 0) {
+                        tvRating.setText("Chưa có đánh giá");
+                        return;
+                    }
+
+                    double total = 0;
+                    for (var doc : snapshot.getDocuments()) {
+                        Review r = doc.toObject(Review.class);
+                        if (r != null) total += r.getRating();
+                    }
+
+                    double avg = total / count;
+                    tvRating.setText(String.format(
+                            Locale.getDefault(),
+                            "%.1f (%d đánh giá)", avg, count
+                    ));
+                });
     }
 }
