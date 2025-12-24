@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="26dp"
+    android:background="@color/white"
+    tools:context=".VerificationActivity">
+
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_back" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xác thực"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/color_text_dark"
+        android:layout_marginTop="24dp"/>
+
+    <TextView
+        android:id="@+id/text_email_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng nhập mã 6 chữ số được gửi đến \nDevon000@gmail.com"
+        android:textSize="16sp"
+        android:textColor="@color/color_text_light"
+        android:layout_marginTop="8dp"/>
+
+    <com.chaos.view.PinView
+        android:id="@+id/pin_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:itemCount="6"
+        app:itemWidth="48dp"
+        app:itemHeight="48dp"
+        app:lineColor="@color/color_primary"
+        app:viewType="rectangle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:cursorVisible="true"
+        app:cursorColor="@color/color_primary"
+        android:inputType="number"
+        app:itemRadius="8dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Tếp tục"
+        app:cornerRadius="12dp"
+        app:backgroundTint="@color/color_primary"
+        android:textColor="@color/white"
+        android:layout_marginTop="32dp"/>
+
+    <TextView
+        android:id="@+id/text_resend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Không nhận được mã ! Gửi lại"
+        android:textSize="14sp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/color_text_light"
+        android:layout_marginTop="24dp"/>
+
+</LinearLayout>
