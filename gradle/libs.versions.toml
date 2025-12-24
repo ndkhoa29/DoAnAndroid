@@ -6,6 +6,8 @@ espressoCore = "3.7.0"
 appcompat = "1.7.1"
 material = "1.13.0"
 activity = "1.11.0"
+googleServices = "4.4.0"
+firebaseBom = "32.7.0"
 constraintlayout = "2.2.1"
 annotation = "1.6.0"
 lifecycleLivedataKtx = "2.6.1"
@@ -13,6 +15,10 @@ lifecycleViewmodelKtx = "2.6.1"
 googleServices = "4.4.1"
 
 [libraries]
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+# Thêm Glide để load ảnh từ link Firebase
+glide = { group = "com.github.bumptech.glide", name = "glide", version = "4.16.0" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
