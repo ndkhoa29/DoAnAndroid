@@ -75,8 +75,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             finish();
         });
 
-
-        // Click vào payment để mở màn hình chọn phương thức thanh toán
         cardPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +82,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
             }
         });
 
-        // Click vào radio button cũng mở màn hình payment method
         rbGooglePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,12 +111,6 @@ public class ReviewSummaryActivity extends AppCompatActivity {
         rbGooglePay.setChecked(true);
     }
 
-//    private void navigateToCalendar() {
-//        Intent intent = new Intent(ReviewSummaryActivity.this, CalendarActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        startActivity(intent);
-//        finish();
-//    }
 
     private void openPaymentMethodScreen() {
         Intent intent = new Intent(ReviewSummaryActivity.this, PaymentMethodActivity.class);
@@ -134,7 +125,7 @@ public class ReviewSummaryActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_PAYMENT_METHOD && resultCode == RESULT_OK) {
             if (data != null) {
-                // Nhận phương thức thanh toán được chọn từ PaymentMethodActivity
+
                 selectedPaymentMethod = data.getStringExtra("payment_method");
                 boolean paymentSuccess = data.getBooleanExtra("payment_success", false);
 
@@ -145,11 +136,10 @@ public class ReviewSummaryActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }
 
-                // Nếu đã thanh toán thành công từ màn hình Payment Method
                 if (paymentSuccess) {
                     Toast.makeText(this, "Thanh toán thành công!",
                             Toast.LENGTH_LONG).show();
-                    // Navigate to success screen or show dialog
+
                     showBookingCompletedDialog();
                 }
             }

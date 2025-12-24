@@ -1,5 +1,4 @@
-package com.example.homeserviceapp;
-
+package com.example.homeserviceapp.models;
 public class BookingItem {
     private String bookingId;
     private String date;

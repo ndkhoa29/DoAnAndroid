@@ -83,25 +83,6 @@ public class BookingCompletedDialog extends Dialog {
             }
         });
 
-//        btnViewBooking.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dismiss();
-//                if (listener != null) {
-//                    listener.onViewBooking();
-//                }
-//            }
-//        });
-
-
-//        btnViewBooking.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dismiss();
-//                Intent intent = new Intent(v.getContext(), BookingFragment.class);
-//                v.getContext().startActivity(intent);
-//            }
-//        });
     }
 
     private void startAnimations() {

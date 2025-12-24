@@ -19,8 +19,6 @@ public class VerificationActivity extends AppCompatActivity {
         imgBack.setOnClickListener(v -> finish());
 
         btnContinue.setOnClickListener(v -> {
-            // (Sau khi xác thực OTP thành công)
-            // Chuyển sang màn hình ResetPassword
             Intent intent = new Intent(VerificationActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
         });
