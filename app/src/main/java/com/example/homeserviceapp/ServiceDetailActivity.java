@@ -13,8 +13,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.example.homeserviceapp.models.ServiceItem;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -30,31 +28,16 @@ public class ServiceDetailActivity extends AppCompatActivity {
     androidx.recyclerview.widget.RecyclerView rvReviews;
     ReviewAdapter reviewAdapter;
     java.util.List<com.example.homeserviceapp.models.Review> reviewList;
-    
+
     private FirebaseFirestore db;
     private String serviceId;
     private ServiceItem currentService;
-
-    private String serviceID;
-    private String serviceName;
-    private String servicePrice;
-    private String providerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_detail);
 
-        serviceId = getIntent().getStringExtra("serviceId");
-        serviceName = getIntent().getStringExtra("serviceName");
-        servicePrice = getIntent().getStringExtra("servicePrice");
-        providerName = getIntent().getStringExtra("providerName");
-
-        if (serviceId == null || serviceId.isEmpty()) {
-            Toast.makeText(this, "Lỗi: Không tìm thấy dịch vụ", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
         db = FirebaseFirestore.getInstance();
         serviceId = getIntent().getStringExtra("SERVICE_ID");
 
@@ -65,7 +48,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         initViews();
         setupListeners();
-        
+
         if (serviceId != null) {
             loadServiceData();
         } else {
@@ -73,15 +56,12 @@ public class ServiceDetailActivity extends AppCompatActivity {
             finish();
         }
     }
-    
+
     private void initViews() {
         btnChat = findViewById(R.id.btnChat);
         btnCall = findViewById(R.id.btnCall);
         btnBookNow = findViewById(R.id.btnBookNow);
         btnBack = findViewById(R.id.btnBack);
-
-        btnBack.setOnClickListener(v -> finish());
-
         imgService = findViewById(R.id.imgService);
         tvTitle = findViewById(R.id.tvTitle);
         tvPrice = findViewById(R.id.tvPrice);
@@ -89,21 +69,21 @@ public class ServiceDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tvDescription);
         tvProviderName = findViewById(R.id.tvProviderName);
         providerSection = findViewById(R.id.providerSection);
-        
+
         tvReadMore = findViewById(R.id.tvReadMore);
-        
+
         btnChat.setVisibility(View.VISIBLE);
         btnCall.setVisibility(View.VISIBLE);
         btnBookNow.setVisibility(View.VISIBLE);
-        
+
         rvReviews = findViewById(R.id.rvReviews);
         tvNoReviews = findViewById(R.id.tvNoReviews);
         rvReviews.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
     }
-    
+
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
-        
+
         btnChat.setOnClickListener(v -> {
             Intent intent = new Intent(ServiceDetailActivity.this, ChatActivity.class);
             startActivity(intent);
@@ -118,28 +98,12 @@ public class ServiceDetailActivity extends AppCompatActivity {
         btnBookNow.setOnClickListener(v -> {
             try {
                 Log.d("ServiceDetail", "Bắt đầu chuyển sang CalendarActivity");
-
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (currentUser == null) {
-                    Toast.makeText(ServiceDetailActivity.this,
-                            "Vui lòng đăng nhập để đặt dịch vụ",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
-
-                intent.putExtra("serviceId", serviceId);
-                intent.putExtra("service_name", serviceName != null ? serviceName : "Dịch vụ");
-                intent.putExtra("service_price", servicePrice != null ? servicePrice : "0");
-                intent.putExtra("provider_name", providerName != null ? providerName : "");
-
                 Intent intent = new Intent(ServiceDetailActivity.this, CalendarActivity.class);
                 if (currentService != null) {
                     intent.putExtra("service_id", serviceId);
                     intent.putExtra("service_name", currentService.getTitle());
                     intent.putExtra("service_price", String.valueOf(currentService.getPrice()));
-                    
+
                     if (currentService.getImageUrls() != null && !currentService.getImageUrls().isEmpty()) {
                         intent.putExtra("service_image", currentService.getImageUrls().get(0));
                     }
@@ -148,40 +112,38 @@ public class ServiceDetailActivity extends AppCompatActivity {
                 Log.d("ServiceDetail", "Đã gọi startActivity");
             } catch (Exception e) {
                 Log.e("ServiceDetail", "Lỗi: " + e.getMessage());
-                Toast.makeText(ServiceDetailActivity.this,
-                        "Lỗi: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(ServiceDetailActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
-    
+
     private void loadServiceData() {
         db.collection("services").document(serviceId).get()
-            .addOnSuccessListener(documentSnapshot -> {
-                currentService = documentSnapshot.toObject(ServiceItem.class);
-                if (currentService != null) {
-                    displayServiceData();
-                } else {
-                    Toast.makeText(this, "Không tìm thấy dữ liệu dịch vụ", Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener(documentSnapshot -> {
+                    currentService = documentSnapshot.toObject(ServiceItem.class);
+                    if (currentService != null) {
+                        displayServiceData();
+                    } else {
+                        Toast.makeText(this, "Không tìm thấy dữ liệu dịch vụ", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi tải dữ liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     finish();
-                }
-            })
-            .addOnFailureListener(e -> {
-                Toast.makeText(this, "Lỗi tải dữ liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                finish();
-            });
+                });
     }
-    
+
     private void displayServiceData() {
         tvTitle.setText(currentService.getTitle());
         tvPrice.setText(currentService.getFormattedPrice());
-        
+
         String desc = currentService.getDescription();
         tvDescription.setText(desc);
-        
+
         tvReadMore.setVisibility(View.GONE);
         tvDescription.setMaxLines(3);
-        
+
         tvDescription.post(() -> {
             if (tvDescription.getLineCount() > 3 || (desc != null && desc.length() > 100)) {
                 tvReadMore.setVisibility(View.VISIBLE);
@@ -196,99 +158,99 @@ public class ServiceDetailActivity extends AppCompatActivity {
                 });
             }
         });
-        
+
         tvRating.setText("Đang tải...");
-        
+
         if (currentService.getImageUrls() != null && !currentService.getImageUrls().isEmpty()) {
             com.bumptech.glide.Glide.with(this)
-                .load(currentService.getImageUrls().get(0))
-                .into(imgService);
+                    .load(currentService.getImageUrls().get(0))
+                    .into(imgService);
         }
-        
+
         providerSection.setVisibility(View.VISIBLE);
-        
-        String providerName = "Service Center AZ"; 
-        
+
+        String providerName = "Service Center AZ";
+
         tvProviderName.setText(providerName);
-        
+
         btnChat.setVisibility(View.VISIBLE);
         btnCall.setVisibility(View.VISIBLE);
-        
+
         loadReviews();
-        
+
         calculateAndDisplayRating();
     }
-    
+
     private void loadReviews() {
         reviewList = new java.util.ArrayList<>();
         reviewAdapter = new ReviewAdapter(this, reviewList);
         rvReviews.setAdapter(reviewAdapter);
-        
-        Log.d("ServiceDetail", "Loading reviews for serviceId: " + serviceId);
-        
-        db.collection("reviews")
-            .whereEqualTo("serviceId", serviceId)
-            .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .limit(50)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                Log.d("ServiceDetail", "Query success, found " + queryDocumentSnapshots.size() + " reviews");
-                reviewList.clear();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
-                    if (review != null) {
-                        reviewList.add(review);
-                        Log.d("ServiceDetail", "Added review: " + review.getComment());
-                    }
-                }
-                
 
-                
-                if (reviewList.isEmpty()) {
-                    Log.d("ServiceDetail", "No reviews found, showing empty state");
-                    rvReviews.setVisibility(android.view.View.GONE);
+        Log.d("ServiceDetail", "Loading reviews for serviceId: " + serviceId);
+
+        db.collection("reviews")
+                .whereEqualTo("serviceId", serviceId)
+                .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .limit(50)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d("ServiceDetail", "Query success, found " + queryDocumentSnapshots.size() + " reviews");
+                    reviewList.clear();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
+                        if (review != null) {
+                            reviewList.add(review);
+                            Log.d("ServiceDetail", "Added review: " + review.getComment());
+                        }
+                    }
+
+
+
+                    if (reviewList.isEmpty()) {
+                        Log.d("ServiceDetail", "No reviews found, showing empty state");
+                        rvReviews.setVisibility(android.view.View.GONE);
+                        tvNoReviews.setVisibility(android.view.View.VISIBLE);
+                    } else {
+                        Log.d("ServiceDetail", "Showing " + reviewList.size() + " reviews");
+                        rvReviews.setVisibility(android.view.View.VISIBLE);
+                        tvNoReviews.setVisibility(android.view.View.GONE);
+                    }
+
+                    reviewAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ServiceDetail", "Error loading reviews: " + e.getMessage());
                     tvNoReviews.setVisibility(android.view.View.VISIBLE);
-                } else {
-                    Log.d("ServiceDetail", "Showing " + reviewList.size() + " reviews");
-                    rvReviews.setVisibility(android.view.View.VISIBLE);
-                    tvNoReviews.setVisibility(android.view.View.GONE);
-                }
-                
-                reviewAdapter.notifyDataSetChanged();
-            })
-            .addOnFailureListener(e -> {
-                Log.e("ServiceDetail", "Error loading reviews: " + e.getMessage());
-                tvNoReviews.setVisibility(android.view.View.VISIBLE);
-                rvReviews.setVisibility(android.view.View.GONE);
-                Toast.makeText(this, "Lỗi tải đánh giá: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            });
+                    rvReviews.setVisibility(android.view.View.GONE);
+                    Toast.makeText(this, "Lỗi tải đánh giá: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
-    
+
     private void calculateAndDisplayRating() {
         db.collection("reviews")
-            .whereEqualTo("serviceId", serviceId)
-            .get()
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                int count = queryDocumentSnapshots.size();
-                if (count == 0) {
-                    tvRating.setText("Chưa có đánh giá");
-                    return;
-                }
-                
-                double totalRating = 0;
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
-                    if (review != null) {
-                        totalRating += review.getRating();
+                .whereEqualTo("serviceId", serviceId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int count = queryDocumentSnapshots.size();
+                    if (count == 0) {
+                        tvRating.setText("Chưa có đánh giá");
+                        return;
                     }
-                }
-                
-                double averageRating = totalRating / count;
-                tvRating.setText(String.format(Locale.getDefault(), "%.1f (%d Đánh giá)", averageRating, count));
-            })
-            .addOnFailureListener(e -> {
-                tvRating.setText("5.0 (0 Đánh giá)");
-            });
+
+                    double totalRating = 0;
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        com.example.homeserviceapp.models.Review review = doc.toObject(com.example.homeserviceapp.models.Review.class);
+                        if (review != null) {
+                            totalRating += review.getRating();
+                        }
+                    }
+
+                    double averageRating = totalRating / count;
+                    tvRating.setText(String.format(Locale.getDefault(), "%.1f (%d Đánh giá)", averageRating, count));
+                })
+                .addOnFailureListener(e -> {
+                    tvRating.setText("5.0 (0 Đánh giá)");
+                });
     }
 
     @Override

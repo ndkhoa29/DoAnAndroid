@@ -104,7 +104,6 @@ public class PaymentMethodActivity extends AppCompatActivity {
             if (selectedPaymentMethod == null) selectedPaymentMethod = "VNPay";
         }
 
-        // Format in VND
         NumberFormat currencyFormat = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
         tvTotalAmount.setText(currencyFormat.format(totalAmount) + " đ");
         setDefaultPaymentMethod();
@@ -143,10 +142,8 @@ public class PaymentMethodActivity extends AppCompatActivity {
             return;
         }
 
-        // Show processing dialog
         showProcessingDialog();
 
-        // Simulate payment processing delay (2 seconds)
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             dismissProcessingDialog();
             updateBookingStatus();
@@ -178,10 +175,9 @@ public class PaymentMethodActivity extends AppCompatActivity {
                 Toast.makeText(this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
                 
                 android.util.Log.d("PaymentMethod", "✅ Payment successful, sending notification...");
-                // Send notification to admins
+
                 sendPaymentNotificationToAdmins(bookingId, selectedPaymentMethod);
-                
-                // Return success result
+
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("payment_method", selectedPaymentMethod);
                 resultIntent.putExtra("payment_success", true);
@@ -198,8 +194,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
         if (userId == null) return;
         
         android.util.Log.d("PaymentMethod", "🔍 Fetching booking and user info...");
-        
-        // Get booking details
+
         db.collection("bookings").document(bookingId).get()
             .addOnSuccessListener(bookingDoc -> {
                 if (!bookingDoc.exists()) return;
@@ -210,8 +205,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
                 
                 String bookingCode = booking.getCode() != null ? booking.getCode() : bookingId;
                 String serviceName = booking.getServiceName();
-                
-                // Get user's fullName
+
                 db.collection("users").document(userId).get()
                     .addOnSuccessListener(userDoc -> {
                         String userName = userDoc.getString("fullName");
@@ -221,8 +215,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
                         
                         final String finalUserName = userName;
                         android.util.Log.d("PaymentMethod", "👤 User: " + finalUserName);
-                        
-                        // Query all admins
+
                         db.collection("users")
                             .whereEqualTo("userType", "admin")
                             .get()
