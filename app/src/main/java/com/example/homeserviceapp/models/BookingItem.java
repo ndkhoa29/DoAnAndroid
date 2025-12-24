@@ -1,5 +1,4 @@
 package com.example.homeserviceapp.models;
-
 public class BookingItem {
     private String bookingId;
     private String date;
@@ -27,5 +26,4 @@ public class BookingItem {
     public String getTime() { return time; }
     public String getPrice() { return price; }
     public int getImageResId() { return imageResId; }
-
 }
